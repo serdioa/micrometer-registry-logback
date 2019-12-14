@@ -32,7 +32,7 @@ public class MetricsConsumer implements Runnable {
 
     private void consume() throws InterruptedException {
         final StringBuilder sb = new StringBuilder();
-        
+
         boolean first = true;
         for (Measurement m : this.timer.measure()) {
             if (first) {
@@ -42,8 +42,9 @@ public class MetricsConsumer implements Runnable {
             }
             sb.append(m.getStatistic()).append("=").append(m.getValue());
         }
+
         System.out.println("Consumer: " + sb);
-        
+
         Thread.sleep(1000);
     }
 }

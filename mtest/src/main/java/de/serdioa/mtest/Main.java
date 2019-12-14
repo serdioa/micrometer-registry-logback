@@ -1,5 +1,8 @@
 package de.serdioa.mtest;
 
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+
 
 public class Main {
     private final MetricsPublisher publisher;
@@ -8,18 +11,22 @@ public class Main {
     private final Thread publisherThread;
     private final Thread consumerThread;
     
+    private final MeterRegistry meterRegistry;
+    
     public static void main(String [] args) throws Exception {
         final Main main = new Main();
         main.start();
         
-        Thread.sleep(5000);
+        Thread.sleep(30000);
         
         main.stop();
     }
     
     private Main() {
-        this.publisher = new MetricsPublisher();
-        this.consumer = new MetricsConsumer();
+        this.meterRegistry = new SimpleMeterRegistry();
+        
+        this.publisher = new MetricsPublisher(this.meterRegistry);
+        this.consumer = new MetricsConsumer(this.meterRegistry);
         
         this.publisherThread = new Thread(this.publisher);
         this.consumerThread = new Thread(this.consumer);
@@ -46,5 +53,8 @@ public class Main {
         this.consumerThread.join();
         
         System.out.println("Threads has been stopped");
+        
+        this.meterRegistry.close();
+        System.out.println("Meter registry has been closed");
     }
 }

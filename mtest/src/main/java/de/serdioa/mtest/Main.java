@@ -1,15 +1,12 @@
 package de.serdioa.mtest;
 
 import java.time.Duration;
-import java.util.concurrent.ThreadFactory;
 
-import io.micrometer.core.instrument.Clock;
+import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingMeterRegistry;
+import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingRegistryConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
-import io.micrometer.core.instrument.logging.LoggingMeterRegistry;
-import io.micrometer.core.instrument.logging.LoggingRegistryConfig;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
-import io.micrometer.core.instrument.util.NamedThreadFactory;
 
 
 public class Main {
@@ -33,7 +30,7 @@ public class Main {
     private Main() {
         final MeterRegistry simpleMeterRegistry = new SimpleMeterRegistry();
 
-        final LoggingRegistryConfig loggingRegistryConfig = new LoggingRegistryConfig() {
+        final DirectLoggingRegistryConfig loggingRegistryConfig = new DirectLoggingRegistryConfig() {
             @Override
             public Duration step() {
                 return Duration.ofSeconds(10);
@@ -44,7 +41,7 @@ public class Main {
                 return null;
             }
         };
-        final LoggingMeterRegistry loggingMeterRegistry = new LoggingMeterRegistry(loggingRegistryConfig, Clock.SYSTEM);
+        final DirectLoggingMeterRegistry loggingMeterRegistry = new DirectLoggingMeterRegistry(loggingRegistryConfig);
 
         final CompositeMeterRegistry compositeRegistry = new CompositeMeterRegistry();
         compositeRegistry.add(simpleMeterRegistry);

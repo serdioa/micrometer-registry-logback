@@ -13,7 +13,7 @@ public class MetricsConsumer implements Runnable {
 
     public MetricsConsumer(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
-        this.timer = this.meterRegistry.timer("publisher.timer");
+        this.timer = this.meterRegistry.timer("publisher.timer", "test.\ntag1", "test.\nvalue1", "test.tag2", "test.value2");
     }
 
 

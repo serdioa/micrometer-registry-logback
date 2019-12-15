@@ -15,7 +15,7 @@ public class MetricsPublisher implements Runnable {
 
     public MetricsPublisher(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
-        this.timer = this.meterRegistry.timer("publisher.timer");
+        this.timer = this.meterRegistry.timer("publisher.timer", "test.\ntag1", "test.\nvalue1", "test.tag2", "test.value2");
     }
 
 

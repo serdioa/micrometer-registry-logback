@@ -49,8 +49,12 @@ public class ConsoleSimpleMeterLogger implements DirectMeterLogger {
 
     @Override
     public void logTimer(Timer timer, long nanoseconds) {
-        final String meterId = escape(this.meterIdPrinter.apply(timer));
-        printf("%s: %d\n", meterId, nanoseconds);
+        printf("%s: %d\n", printMeterId(timer), nanoseconds);
+    }
+    
+    
+    private String printMeterId(Meter meter) {
+        return escape(this.meterIdPrinter.apply(meter));
     }
 
 

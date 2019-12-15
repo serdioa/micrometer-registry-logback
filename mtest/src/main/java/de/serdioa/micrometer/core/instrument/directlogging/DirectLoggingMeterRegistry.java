@@ -32,7 +32,7 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
     private DirectLoggingMeterRegistry(DirectLoggingRegistryConfig config, Clock clock, ThreadFactory threadFactory) {
         super(config, clock);
         this.config = Objects.requireNonNull(config);
-        this.logger = new ConsoleSimpleMeterLogger();
+        this.logger = new Slf4jSimpleMeterLogger();
     }
 
 

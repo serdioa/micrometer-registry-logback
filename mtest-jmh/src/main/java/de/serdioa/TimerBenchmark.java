@@ -1,0 +1,128 @@
+package de.serdioa;
+
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingMeterRegistry;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
+import org.openjdk.jmh.annotations.Benchmark;
+import org.openjdk.jmh.annotations.BenchmarkMode;
+import org.openjdk.jmh.annotations.Fork;
+import org.openjdk.jmh.annotations.Measurement;
+import org.openjdk.jmh.annotations.Mode;
+import org.openjdk.jmh.annotations.OutputTimeUnit;
+import org.openjdk.jmh.annotations.Param;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
+import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
+import org.openjdk.jmh.annotations.Warmup;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
+
+
+@State(Scope.Benchmark)
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.NANOSECONDS)
+@Fork(1)
+@Warmup(iterations = 3, time = 5)
+@Measurement(iterations = 5, time = 5)
+public class TimerBenchmark {
+    
+    private static final int TS_COUNT = 100000;
+    private static final Random rnd = new Random(123);
+
+    
+    @Param({"simple", "logging"})
+    private String metricsMode;
+    
+//    @Param({"noop", "sync", "async"})
+    @Param({"noop"})
+    private String loggingMode;
+    
+    private MeterRegistry meterRegistry;
+    private Timer timer;
+    
+    private long [] ts;
+    private int index;
+    
+    
+    @Setup
+    public void setup() {
+        switch (this.metricsMode) {
+            case "simple":
+                this.meterRegistry = buildSimpleMeterRegistry();
+                break;
+            case "logging":
+                this.meterRegistry = buildLoggingMeterRegistry();
+                break;
+            default:
+                throw new IllegalStateException("Unexpected metricsMode:" + this.metricsMode);
+        }
+        this.timer = this.meterRegistry.timer("testTimer");
+        
+        this.ts = new long[TS_COUNT];
+        for (int i = 0; i < TS_COUNT; ++i) {
+            this.ts[i] = rnd.nextInt(10000);
+        }
+        this.index = 0;
+    
+        LogbackConfigurator logbackConfig = new LogbackConfigurator().json(true);
+        switch (this.loggingMode) {
+            case "noop":
+                logbackConfig.type(LogbackConfigurator.Type.NOOP);
+                break;
+            case "sync":
+                logbackConfig.type(LogbackConfigurator.Type.FILE)
+                        .fileName("logback-sync." + this.metricsMode + ".log")
+                        .asynchronous(false);
+                break;
+            case "async":
+                logbackConfig.type(LogbackConfigurator.Type.FILE)
+                        .fileName("logback-async." + this.metricsMode + ".log")
+                        .asynchronous(true);
+                break;
+            default:
+                // Skip
+        }
+        logbackConfig.configure();
+    }
+
+
+    @TearDown
+    public void tearDown() {
+        LogbackConfigurator.stop();
+    }
+    
+    
+    private MeterRegistry buildSimpleMeterRegistry() {
+        return new SimpleMeterRegistry();
+    }
+    
+    
+    private MeterRegistry buildLoggingMeterRegistry() {
+        return new DirectLoggingMeterRegistry();
+    }
+    
+    
+    @Benchmark
+    public void timer() {
+        this.timer.record(this.ts[index], TimeUnit.MILLISECONDS);
+        if ((++this.index) >= TS_COUNT) {
+            this.index = 0;
+        }
+    }
+    
+
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(TimerBenchmark.class.getSimpleName())
+                .build();
+
+        new Runner(opt).run();
+    }    
+}

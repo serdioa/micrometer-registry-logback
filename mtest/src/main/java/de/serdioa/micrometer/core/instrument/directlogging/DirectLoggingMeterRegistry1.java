@@ -101,7 +101,9 @@ public class DirectLoggingMeterRegistry1 extends StepMeterRegistry {
     }
 
 
+    private static final StructuredArgument TIMER_TYPE = StructuredArguments.keyValue("type", "timer");
     private class DirectLoggingTimer extends StepTimer {
+
         private final Logger directLogger;
         private final Marker tags;
 
@@ -121,8 +123,9 @@ public class DirectLoggingMeterRegistry1 extends StepMeterRegistry {
             if (this.directLogger.isInfoEnabled()) {
                 long nanoseconds = unit.toNanos(amount);
 
+
                 StructuredArgument metrics = StructuredArguments.keyValue("amt", nanoseconds);
-                this.directLogger.info(this.tags, "timer", metrics);
+                this.directLogger.info(this.tags, null, TIMER_TYPE, metrics);
             }
         }
     }

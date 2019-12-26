@@ -3,7 +3,7 @@ package de.serdioa;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingMeterRegistry;
+import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingMeterRegistry1;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -36,13 +36,13 @@ public class TimerBenchmark {
     private static final int TS_COUNT = 100000;
     private static final Random rnd = new Random(123);
 
-
 //    @Param({"simple", "logging"})
     @Param({"logging"})
     private String metricsMode;
 
     @Param({"noop", "sync", "async"})
-//     @Param({"noop"})
+//    @Param({"noop"})
+//    @Param({"console"})
     private String loggingMode;
 
     private MeterRegistry meterRegistry;
@@ -89,6 +89,9 @@ public class TimerBenchmark {
                         .fileName("logback-async." + this.metricsMode + ".log")
                         .asynchronous(true);
                 break;
+            case "console":
+                logbackConfig.type(LogbackConfigurator.Type.CONSOLE)
+                        .asynchronous(true);
             default:
                 // Skip
         }
@@ -108,7 +111,7 @@ public class TimerBenchmark {
 
 
     private MeterRegistry buildLoggingMeterRegistry() {
-        return new DirectLoggingMeterRegistry();
+        return new DirectLoggingMeterRegistry1();
     }
 
 

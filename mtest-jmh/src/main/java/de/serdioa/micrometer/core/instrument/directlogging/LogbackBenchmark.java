@@ -1,4 +1,4 @@
-package de.serdioa;
+package de.serdioa.micrometer.core.instrument.directlogging;
 
 import java.util.concurrent.TimeUnit;
 

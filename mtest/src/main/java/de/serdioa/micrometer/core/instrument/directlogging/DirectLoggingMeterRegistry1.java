@@ -104,14 +104,14 @@ public class DirectLoggingMeterRegistry1 extends StepMeterRegistry {
     private static final StructuredArgument TIMER_TYPE = StructuredArguments.keyValue("type", "timer");
     private class DirectLoggingTimer extends StepTimer {
 
-        // private final Logger directLogger;
+        private final Logger directLogger;
         // private final Marker tags;
 
         public DirectLoggingTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig,
                      PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepMillis, boolean supportsAggregablePercentiles) {
             super (id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepMillis, supportsAggregablePercentiles);
 
-            // this.directLogger = getDirectLogger(this);
+            this.directLogger = getDirectLogger(this);
             // this.tags = printTags(this);
         }
 
@@ -120,13 +120,12 @@ public class DirectLoggingMeterRegistry1 extends StepMeterRegistry {
         protected void recordNonNegative(long amount, TimeUnit unit) {
             super.recordNonNegative(amount, unit);
             
-            Logger directLogger = getDirectLogger(this);
-            if (directLogger.isInfoEnabled()) {
+            if (this.directLogger.isInfoEnabled()) {
                 long nanoseconds = unit.toNanos(amount);
 
                 Marker tags = printTags(this);
                 StructuredArgument metrics = StructuredArguments.keyValue("amt", nanoseconds);
-                directLogger.info(tags, "timer", metrics);
+                this.directLogger.info(tags, "timer", metrics);
             }
         }
     }

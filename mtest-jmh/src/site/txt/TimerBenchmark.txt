@@ -12,13 +12,18 @@ TimerBenchmark.timerWithTags           sync        logging  avgt   10  6373.471 
 TimerBenchmark.timerWithTags          async        logging  avgt   10   688.769 ±   18.621  ns/op
 
 
-
-Caching meter tags:
-
-
-
 Caching logger:
 
+Benchmark                     (loggingMode)  (metricsMode)  Mode  Cnt     Score     Error  Units
+TimerBenchmark.timer                   noop        logging  avgt   10   123.355 ±   1.510  ns/op
+TimerBenchmark.timer                   sync        logging  avgt   10  5187.053 ± 587.470  ns/op
+TimerBenchmark.timer                  async        logging  avgt   10   218.004 ±   4.989  ns/op
+TimerBenchmark.timerWithTags           noop        logging  avgt   10   529.190 ±   4.690  ns/op
+TimerBenchmark.timerWithTags           sync        logging  avgt   10  6219.351 ± 740.693  ns/op
+TimerBenchmark.timerWithTags          async        logging  avgt   10   654.444 ±  11.505  ns/op
+
+
+Caching meter tags:
 
 
 Using structured parameter instead of a message for the meter type:

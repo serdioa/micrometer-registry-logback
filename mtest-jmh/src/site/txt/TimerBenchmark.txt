@@ -1,0 +1,36 @@
+Baseline: SimpleMeterRegistry, 34 ns
+
+
+Initial implementation: no caching.
+
+Benchmark                     (loggingMode)  (metricsMode)  Mode  Cnt     Score      Error  Units
+TimerBenchmark.timer                   noop        logging  avgt   10   205.849 ±    3.119  ns/op
+TimerBenchmark.timer                   sync        logging  avgt   10  5666.099 ±  498.003  ns/op
+TimerBenchmark.timer                  async        logging  avgt   10   424.218 ±   48.519  ns/op
+TimerBenchmark.timerWithTags           noop        logging  avgt   10   553.711 ±   24.565  ns/op
+TimerBenchmark.timerWithTags           sync        logging  avgt   10  6689.825 ± 1193.750  ns/op
+TimerBenchmark.timerWithTags          async        logging  avgt   10   747.421 ±   55.107  ns/op
+
+
+Caching meter tags:
+
+Benchmark                     (loggingMode)  (metricsMode)  Mode  Cnt     Score     Error  Units
+TimerBenchmark.timer                   noop        logging  avgt   10   206.398 ±  18.170  ns/op
+TimerBenchmark.timer                   sync        logging  avgt   10  5614.424 ± 531.380  ns/op
+TimerBenchmark.timer                  async        logging  avgt   10   382.017 ±  92.402  ns/op
+TimerBenchmark.timerWithTags           noop        logging  avgt   10   554.731 ±  11.914  ns/op
+TimerBenchmark.timerWithTags           sync        logging  avgt   10  6249.270 ± 648.900  ns/op
+TimerBenchmark.timerWithTags          async        logging  avgt   10   848.816 ±  32.626  ns/op
+
+
+Caching logger:
+
+Benchmark                     (loggingMode)  (metricsMode)  Mode  Cnt     Score     Error  Units
+TimerBenchmark.timer                   noop        logging  avgt   10   205.919 ±   2.305  ns/op
+TimerBenchmark.timer                   sync        logging  avgt   10  4816.591 ± 581.918  ns/op
+TimerBenchmark.timer                  async        logging  avgt   10   288.028 ±   3.585  ns/op
+TimerBenchmark.timerWithTags           noop        logging  avgt   10   582.835 ±   4.909  ns/op
+TimerBenchmark.timerWithTags           sync        logging  avgt   10  5455.618 ± 685.921  ns/op
+TimerBenchmark.timerWithTags          async        logging  avgt   10   732.480 ±   4.513  ns/op
+
+

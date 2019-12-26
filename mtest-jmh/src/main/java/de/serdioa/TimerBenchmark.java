@@ -29,28 +29,30 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.NANOSECONDS)
 @Fork(1)
-@Warmup(iterations = 3, time = 5)
-@Measurement(iterations = 5, time = 5)
+@Warmup(iterations = 10, time = 10)
+@Measurement(iterations = 10, time = 10)
 public class TimerBenchmark {
-    
+
     private static final int TS_COUNT = 100000;
     private static final Random rnd = new Random(123);
 
-    
-    @Param({"simple", "logging"})
+
+//    @Param({"simple", "logging"})
+    @Param({"logging"})
     private String metricsMode;
-    
-//    @Param({"noop", "sync", "async"})
-    @Param({"noop"})
+
+    @Param({"noop", "sync", "async"})
+//     @Param({"noop"})
     private String loggingMode;
-    
+
     private MeterRegistry meterRegistry;
     private Timer timer;
-    
+    private Timer timerWithTags;
+
     private long [] ts;
     private int index;
-    
-    
+
+
     @Setup
     public void setup() {
         switch (this.metricsMode) {
@@ -63,14 +65,15 @@ public class TimerBenchmark {
             default:
                 throw new IllegalStateException("Unexpected metricsMode:" + this.metricsMode);
         }
-        this.timer = this.meterRegistry.timer("testTimer");
-        
+        this.timer = this.meterRegistry.timer("t1");
+        this.timerWithTags = this.meterRegistry.timer("t2", "k1", "v1", "k2", "v2");
+
         this.ts = new long[TS_COUNT];
         for (int i = 0; i < TS_COUNT; ++i) {
             this.ts[i] = rnd.nextInt(10000);
         }
         this.index = 0;
-    
+
         LogbackConfigurator logbackConfig = new LogbackConfigurator().json(true);
         switch (this.loggingMode) {
             case "noop":
@@ -97,18 +100,18 @@ public class TimerBenchmark {
     public void tearDown() {
         LogbackConfigurator.stop();
     }
-    
-    
+
+
     private MeterRegistry buildSimpleMeterRegistry() {
         return new SimpleMeterRegistry();
     }
-    
-    
+
+
     private MeterRegistry buildLoggingMeterRegistry() {
         return new DirectLoggingMeterRegistry();
     }
-    
-    
+
+
     @Benchmark
     public void timer() {
         this.timer.record(this.ts[index], TimeUnit.MILLISECONDS);
@@ -116,7 +119,16 @@ public class TimerBenchmark {
             this.index = 0;
         }
     }
-    
+
+
+    @Benchmark
+    public void timerWithTags() {
+        this.timerWithTags.record(this.ts[index], TimeUnit.MILLISECONDS);
+        if ((++this.index) >= TS_COUNT) {
+            this.index = 0;
+        }
+    }
+
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
@@ -124,5 +136,5 @@ public class TimerBenchmark {
                 .build();
 
         new Runner(opt).run();
-    }    
+    }
 }

@@ -36,4 +36,11 @@ TimerBenchmark.timerWithTags          async        logging  avgt   10   166.144 
 
 Using structured parameter instead of a message for the meter type:
 
+enchmark                     (loggingMode)  (metricsMode)  Mode  Cnt     Score     Error  Units
+TimerBenchmark.timer                   noop        logging  avgt   10    84.004 ±   1.150  ns/op
+TimerBenchmark.timer                   sync        logging  avgt   10  5077.828 ± 642.408  ns/op
+TimerBenchmark.timer                  async        logging  avgt   10   147.941 ±   6.121  ns/op
+TimerBenchmark.timerWithTags           noop        logging  avgt   10    82.390 ±   1.241  ns/op
+TimerBenchmark.timerWithTags           sync        logging  avgt   10  5532.540 ± 855.647  ns/op
+TimerBenchmark.timerWithTags          async        logging  avgt   10   144.912 ±   6.206  ns/op
 

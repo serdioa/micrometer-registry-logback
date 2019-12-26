@@ -124,7 +124,7 @@ public class DirectLoggingMeterRegistry1 extends StepMeterRegistry {
                 long nanoseconds = unit.toNanos(amount);
 
                 StructuredArgument metrics = StructuredArguments.keyValue("amt", nanoseconds);
-                this.directLogger.info(this.tags, "timer", metrics);
+                this.directLogger.info(this.tags, null, TIMER_TYPE, metrics);
             }
         }
     }

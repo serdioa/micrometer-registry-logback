@@ -39,7 +39,8 @@ public class TimerBenchmark {
     @Param({"logging"})
     private String metricsMode;
 
-    @Param({"noop", "sync", "async"})
+    @Param({"noop", "async"})
+//    @Param({"noop", "sync", "async"})
 //    @Param({"noop"})
 //    @Param({"console"})
     private String loggingMode;

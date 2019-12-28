@@ -1,11 +1,13 @@
 package de.serdioa.micrometer.core.instrument.directlogging;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
@@ -16,6 +18,7 @@ import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.step.StepTimer;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
+import lombok.Getter;
 import net.logstash.logback.argument.StructuredArgument;
 import net.logstash.logback.argument.StructuredArguments;
 import net.logstash.logback.marker.Markers;
@@ -123,9 +126,29 @@ public class DirectLoggingMeterRegistry1 extends StepMeterRegistry {
             if (this.directLogger.isInfoEnabled()) {
                 long nanoseconds = unit.toNanos(amount);
 
-                StructuredArgument metrics = StructuredArguments.keyValue("amt", nanoseconds);
-                this.directLogger.info(this.tags, null, TIMER_TYPE, metrics);
+                this.directLogger.info(this.tags, null, new TimerEvent(nanoseconds));
             }
+        }
+    }
+    
+    private static class TimerEvent implements StructuredArgument {
+        @Getter
+        private final long amount;
+        
+        public TimerEvent(long amount) {
+            this.amount = amount;
+        }
+        
+        @Override
+        public String toString() {
+            return "type=\"timer\",amt=" + this.amount;
+        }
+
+
+        @Override
+        public void writeTo(JsonGenerator generator) throws IOException {
+            generator.writeStringField("type", "tmr");
+            generator.writeNumberField("amt", this.amount);
         }
     }
 }

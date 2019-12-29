@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tags;
+import io.micrometer.core.instrument.TimeGauge;
 import org.apache.commons.lang3.mutable.MutableLong;
 
 
@@ -17,8 +17,9 @@ public class TimeGaugePublisher implements Runnable {
     public TimeGaugePublisher(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
-        this.meterRegistry.more().timeGauge("publisher.timeGauge", Tags.of("tg.\n1", "v.\n2").and("tgg.2", "v.2"),
-                this.timeGauge, TimeUnit.MILLISECONDS, Number::doubleValue);
+        TimeGauge.builder("publisher.timeGauge", this.timeGauge, TimeUnit.MILLISECONDS, Number::doubleValue)
+                .tags("tg.\n1", "v.\n1", "tg.2", "v.2")
+                .register(this.meterRegistry);
     }
 
 

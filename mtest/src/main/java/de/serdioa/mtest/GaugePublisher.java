@@ -3,8 +3,8 @@ package de.serdioa.mtest;
 import java.util.Objects;
 import java.util.Random;
 
+import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Tags;
 import org.apache.commons.lang3.mutable.MutableDouble;
 
 
@@ -16,7 +16,9 @@ public class GaugePublisher implements Runnable {
     public GaugePublisher(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
-        this.meterRegistry.gauge("publisher.gauge", Tags.of("g.\n1", "v.\n2").and("g.2", "v.2"), this.gauge);
+        Gauge.builder("publisher.gauge", this.gauge, Number::doubleValue)
+                .tags("g.\n1", "v.\n1", "g.2", "v.2")
+                .register(this.meterRegistry);
     }
 
 

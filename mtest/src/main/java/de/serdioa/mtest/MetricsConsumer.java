@@ -3,18 +3,16 @@ package de.serdioa.mtest;
 import java.util.Objects;
 
 import io.micrometer.core.instrument.Measurement;
+import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 
 
 public class MetricsConsumer implements Runnable {
     private final MeterRegistry meterRegistry;
-    private final Timer timer;
 
     public MetricsConsumer(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
-        this.timer = this.meterRegistry.timer("publisher.timer", "test.\ntag1", "test.\nvalue1", "test.tag2", "test.value2");
-    }
+}
 
 
     @Override
@@ -31,10 +29,24 @@ public class MetricsConsumer implements Runnable {
 
 
     private void consume() throws InterruptedException {
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder sb = new StringBuilder("Consumer:\n");
+
+        for (Meter m : this.meterRegistry.getMeters()) {
+            sb.append("    ").append(publishMeter(m)).append("\n");
+        }
+
+        System.out.println(sb);
+
+        Thread.sleep(1000);
+    }
+
+
+    private String publishMeter(Meter meter) {
+        StringBuilder sb = new StringBuilder(meter.getId().toString());
+        sb.append(": ");
 
         boolean first = true;
-        for (Measurement m : this.timer.measure()) {
+        for (Measurement m : meter.measure()) {
             if (first) {
                 first = false;
             } else {
@@ -43,8 +55,6 @@ public class MetricsConsumer implements Runnable {
             sb.append(m.getStatistic()).append("=").append(m.getValue());
         }
 
-        System.out.println("Consumer: " + sb);
-
-        Thread.sleep(1000);
+        return sb.toString();
     }
 }

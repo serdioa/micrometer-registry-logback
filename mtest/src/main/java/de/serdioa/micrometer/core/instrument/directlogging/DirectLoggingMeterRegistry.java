@@ -131,6 +131,7 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
         }
     }
 
+
     private static class TimerEvent implements StructuredArgument {
         @Getter
         private final long amount;

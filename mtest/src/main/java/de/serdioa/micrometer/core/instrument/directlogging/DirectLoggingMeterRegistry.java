@@ -48,7 +48,7 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
         super(config, clock);
         this.config = Objects.requireNonNull(config);
 
-        config().namingConvention(NamingConvention.identity);
+        this.config().namingConvention(NamingConvention.identity);
     }
 
 
@@ -130,15 +130,15 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
             }
         }
     }
-    
+
     private static class TimerEvent implements StructuredArgument {
         @Getter
         private final long amount;
-        
+
         public TimerEvent(long amount) {
             this.amount = amount;
         }
-        
+
         @Override
         public String toString() {
             return "type=\"timer\",amt=" + this.amount;
@@ -147,7 +147,7 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
 
         @Override
         public void writeTo(JsonGenerator generator) throws IOException {
-            generator.writeStringField("type", "tmr");
+            generator.writeStringField("type", "timer");
             generator.writeNumberField("amt", this.amount);
         }
     }

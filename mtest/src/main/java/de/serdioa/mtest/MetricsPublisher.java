@@ -1,53 +1,61 @@
 package de.serdioa.mtest;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import io.micrometer.core.instrument.MeterRegistry;
-import io.micrometer.core.instrument.Timer;
 
 
 public class MetricsPublisher implements Runnable {
     private final MeterRegistry meterRegistry;
-    private final Timer timer;
-    private final Random rnd = new Random();
+
+    private final List<Thread> workers = new CopyOnWriteArrayList<>();
+
 
     public MetricsPublisher(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
-        this.timer = this.meterRegistry.timer("publisher.timer", "test.\ntag1", "test.\nvalue1", "test.tag2", "test.value2");
+
+        addPublisher(new TimerPublisher(this.meterRegistry), "timer-publisher");
+    }
+
+
+    private void addPublisher(Runnable publisher, String name) {
+        Thread t = new Thread(publisher, name);
+        this.workers.add(t);
     }
 
 
     @Override
     public void run() {
         try {
-            while (true) {
-                publish();
-            }
+            startWorkers();
+            joinWorkers();
         } catch (InterruptedException ex) {
             System.out.println("Publisher has been interrupted");
+            stopWorkers();
             Thread.currentThread().interrupt();
         }
     }
 
 
-    private void publish() throws InterruptedException {
-        final long startTs = System.nanoTime();
-        doWork();
-        final long endTs = System.nanoTime();
-        final long duration = endTs - startTs;
-
-        this.timer.record(duration, TimeUnit.NANOSECONDS);
-//        System.out.println("Publisher: " + duration);
+    private void startWorkers() {
+        for (Thread t : this.workers) {
+            t.start();
+        }
     }
 
 
-    private void doWork() throws InterruptedException {
-        final double gauss = this.rnd.nextGaussian();
-        long sleep = (long) (gauss * 10 + 100);
-        sleep = (sleep > 0 ? sleep : 0);
+    private void joinWorkers() throws InterruptedException {
+        for (Thread t : this.workers) {
+            t.join();
+        }
+    }
 
-        Thread.sleep(sleep);
+
+    private void stopWorkers() {
+        for (Thread t : this.workers) {
+            t.interrupt();
+        }
     }
 }

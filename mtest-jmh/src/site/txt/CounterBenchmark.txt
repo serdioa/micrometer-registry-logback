@@ -1,0 +1,29 @@
+Benchmark                                  (loggingMode)  (metricsMode)  Mode  Cnt     Score      Error  Units
+CounterBenchmark.increment                          noop         simple  avgt   10     8.505 ±    0.053  ns/op
+CounterBenchmark.increment                          sync         simple  avgt   10     8.696 ±    0.471  ns/op
+CounterBenchmark.increment                         async         simple  avgt   10     8.487 ±    0.106  ns/op
+CounterBenchmark.incrementByValue                   noop         simple  avgt   10     8.310 ±    0.161  ns/op
+CounterBenchmark.incrementByValue                   sync         simple  avgt   10     8.420 ±    0.422  ns/op
+CounterBenchmark.incrementByValue                  async         simple  avgt   10     8.473 ±    0.452  ns/op
+CounterBenchmark.incrementByValueWithTags           noop         simple  avgt   10     8.603 ±    0.430  ns/op
+CounterBenchmark.incrementByValueWithTags           sync         simple  avgt   10     8.296 ±    0.198  ns/op
+CounterBenchmark.incrementByValueWithTags          async         simple  avgt   10     8.258 ±    0.007  ns/op
+CounterBenchmark.incrementWithTags                  noop         simple  avgt   10     8.461 ±    0.009  ns/op
+CounterBenchmark.incrementWithTags                  sync         simple  avgt   10     8.703 ±    0.455  ns/op
+CounterBenchmark.incrementWithTags                 async         simple  avgt   10     8.525 ±    0.282  ns/op
+
+CounterBenchmark.increment                          noop        logging  avgt   10    76.115 ±    1.384  ns/op
+CounterBenchmark.incrementByValue                   noop        logging  avgt   10    76.209 ±    0.699  ns/op
+CounterBenchmark.incrementByValueWithTags           noop        logging  avgt   10    75.919 ±    0.755  ns/op
+CounterBenchmark.incrementWithTags                  noop        logging  avgt   10    75.556 ±    0.598  ns/op
+
+CounterBenchmark.increment                         async        logging  avgt   10   135.817 ±    6.099  ns/op
+CounterBenchmark.incrementByValue                  async        logging  avgt   10   148.723 ±    9.942  ns/op
+CounterBenchmark.incrementByValueWithTags          async        logging  avgt   10   140.201 ±    4.094  ns/op
+CounterBenchmark.incrementWithTags                 async        logging  avgt   10   218.274 ±    7.560  ns/op
+
+CounterBenchmark.increment                          sync        logging  avgt   10  5020.527 ±  435.961  ns/op
+CounterBenchmark.incrementByValue                   sync        logging  avgt   10  5378.509 ±  650.089  ns/op
+CounterBenchmark.incrementByValueWithTags           sync        logging  avgt   10  5823.661 ±  723.204  ns/op
+CounterBenchmark.incrementWithTags                  sync        logging  avgt   10  5467.890 ± 1066.745  ns/op
+

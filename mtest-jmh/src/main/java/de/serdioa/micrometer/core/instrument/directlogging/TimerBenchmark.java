@@ -111,7 +111,7 @@ public class TimerBenchmark {
 
 
     private MeterRegistry buildLoggingMeterRegistry() {
-        return new DirectLoggingMeterRegistry1();
+        return new DirectLoggingMeterRegistry();
     }
 
 

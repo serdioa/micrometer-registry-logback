@@ -9,18 +9,19 @@ import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import io.micrometer.core.instrument.Clock;
+import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
+import io.micrometer.core.instrument.step.StepCounter;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.step.StepTimer;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
 import lombok.Getter;
 import net.logstash.logback.argument.StructuredArgument;
-import net.logstash.logback.argument.StructuredArguments;
 import net.logstash.logback.marker.Markers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,11 +29,13 @@ import org.slf4j.Marker;
 
 
 public class DirectLoggingMeterRegistry extends StepMeterRegistry {
+
     private static final Pattern PATTERN_EOL_CHARACTERS = Pattern.compile("[\n\r]");
 
     public static final String DEFAULT_PREFIX = "metrics";
 
     private final DirectLoggingRegistryConfig config;
+
 
     public DirectLoggingMeterRegistry() {
         this(DirectLoggingRegistryConfig.DEFAULT);
@@ -71,6 +74,12 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
     }
 
 
+    @Override
+    protected Counter newCounter(Meter.Id id) {
+        return new DirectLoggingCounter(id, clock, config.step().toMillis());
+    }
+
+
     private Logger getDirectLogger(Meter meter) {
         final String directLoggerName = getDirectLoggerName(meter);
         return LoggerFactory.getLogger(directLoggerName);
@@ -92,9 +101,9 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
             return null;
         } else {
             return conventionTags.stream()
-                .map(t -> Markers.append(escape(t.getKey()), escape(t.getValue())))
-                .reduce((first, second) -> first.and(second))
-                .orElse(null);
+                    .map(t -> Markers.append(escape(t.getKey()), escape(t.getValue())))
+                    .reduce((first, second) -> first.and(second))
+                    .orElse(null);
         }
     }
 
@@ -104,15 +113,15 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
     }
 
 
-    private static final StructuredArgument TIMER_TYPE = StructuredArguments.keyValue("type", "timer");
     private class DirectLoggingTimer extends StepTimer {
 
         private final Logger directLogger;
         private final Marker tags;
 
+
         public DirectLoggingTimer(Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig,
-                     PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepMillis, boolean supportsAggregablePercentiles) {
-            super (id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepMillis, supportsAggregablePercentiles);
+                PauseDetector pauseDetector, TimeUnit baseTimeUnit, long stepMillis, boolean supportsAggregablePercentiles) {
+            super(id, clock, distributionStatisticConfig, pauseDetector, baseTimeUnit, stepMillis, supportsAggregablePercentiles);
 
             this.directLogger = getDirectLogger(this);
             this.tags = printTags(this);
@@ -133,12 +142,15 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
 
 
     private static class TimerEvent implements StructuredArgument {
+
         @Getter
         private final long amount;
+
 
         public TimerEvent(long amount) {
             this.amount = amount;
         }
+
 
         @Override
         public String toString() {
@@ -149,6 +161,60 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
         @Override
         public void writeTo(JsonGenerator generator) throws IOException {
             generator.writeStringField("type", "timer");
+            generator.writeNumberField("amt", this.amount);
+        }
+    }
+
+
+    private class DirectLoggingCounter extends StepCounter {
+
+        private final Logger directLogger;
+        private final Marker tags;
+
+
+        public DirectLoggingCounter(Id id, Clock clock, long stepMillis) {
+            super(id, clock, stepMillis);
+
+            this.directLogger = getDirectLogger(this);
+            this.tags = printTags(this);
+        }
+
+
+        @Override
+        public void increment(double amount) {
+            super.increment(amount);
+
+            if (this.directLogger.isInfoEnabled()) {
+                this.directLogger.info(this.tags, null, new CounterEvent(amount, this.count()));
+            }
+        }
+    }
+
+
+    private static class CounterEvent implements StructuredArgument {
+
+        @Getter
+        private final double amount;
+
+        @Getter
+        private final double count;
+
+
+        public CounterEvent(double amount, double count) {
+            this.amount = amount;
+            this.count = count;
+        }
+
+
+        @Override
+        public String toString() {
+            return "type=\"counter\",amt=" + this.amount;
+        }
+
+
+        @Override
+        public void writeTo(JsonGenerator generator) throws IOException {
+            generator.writeStringField("type", "counter");
             generator.writeNumberField("amt", this.amount);
         }
     }

@@ -17,7 +17,8 @@ public class MetricsPublisher implements Runnable {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
 //        addPublisher(new TimerPublisher(this.meterRegistry), "timer-publisher");
-        addPublisher(new GaugePublisher(this.meterRegistry), "gauge-publisher");
+//        addPublisher(new GaugePublisher(this.meterRegistry), "gauge-publisher");
+        addPublisher(new TimeGaugePublisher(this.meterRegistry), "time-gauge-publisher");
     }
 
 

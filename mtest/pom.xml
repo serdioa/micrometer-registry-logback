@@ -7,12 +7,12 @@
         <artifactId>mtest-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    
+
     <groupId>de.serdioa</groupId>
     <artifactId>mtest</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    
+
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -46,13 +46,19 @@
             <version>6.3</version>
             <optional>true</optional>
         </dependency>
-        
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.10</version>
             <scope>provided</scope>
         </dependency>
-        
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.9</version>
+        </dependency>
+
     </dependencies>
 </project>

@@ -8,7 +8,7 @@ import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 
 
-public class TimerPublisher  implements Runnable {
+public class TimerPublisher implements Runnable {
     private final MeterRegistry meterRegistry;
     private final Timer timer;
     private final Random rnd = new Random();

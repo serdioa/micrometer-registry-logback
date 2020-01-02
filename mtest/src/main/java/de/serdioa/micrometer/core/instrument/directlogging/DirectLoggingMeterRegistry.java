@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import io.micrometer.core.instrument.Clock;
@@ -13,7 +12,6 @@ import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
-import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepCounter;
@@ -29,8 +27,6 @@ import org.slf4j.Marker;
 
 
 public class DirectLoggingMeterRegistry extends StepMeterRegistry {
-
-    private static final Pattern PATTERN_EOL_CHARACTERS = Pattern.compile("[\n\r]");
 
     public static final String DEFAULT_PREFIX = "metrics";
 
@@ -51,7 +47,7 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
         super(config, clock);
         this.config = Objects.requireNonNull(config);
 
-        this.config().namingConvention(NamingConvention.identity);
+        this.config().namingConvention(new LoggingJsonNamingConvention());
     }
 
 
@@ -89,9 +85,7 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
     private String getDirectLoggerName(Meter meter) {
         final String conventionName = this.getConventionName(meter.getId());
         final String prefix = this.config.prefix();
-        final String prefixedName = (prefix == null ? conventionName : prefix + "." + conventionName);
-
-        return escape(prefixedName);
+        return (prefix == null ? conventionName : prefix + "." + conventionName);
     }
 
 
@@ -101,15 +95,10 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
             return null;
         } else {
             return conventionTags.stream()
-                    .map(t -> Markers.append(escape(t.getKey()), escape(t.getValue())))
+                    .map(t -> Markers.append(t.getKey(), t.getValue()))
                     .reduce((first, second) -> first.and(second))
                     .orElse(null);
         }
-    }
-
-
-    private static String escape(String s) {
-        return PATTERN_EOL_CHARACTERS.matcher(s).replaceAll("");
     }
 
 

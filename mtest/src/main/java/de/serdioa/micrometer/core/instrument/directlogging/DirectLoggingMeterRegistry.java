@@ -9,12 +9,14 @@ import java.util.concurrent.TimeUnit;
 import com.fasterxml.jackson.core.JsonGenerator;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.step.StepCounter;
+import io.micrometer.core.instrument.step.StepDistributionSummary;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.step.StepTimer;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
@@ -73,6 +75,14 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
     @Override
     protected Counter newCounter(Meter.Id id) {
         return new DirectLoggingCounter(id, clock, config.step().toMillis());
+    }
+
+
+    @Override
+    protected DistributionSummary newDistributionSummary(Meter.Id id,
+            DistributionStatisticConfig distributionStatisticConfig, double scale) {
+        return new DirectLoggingDistributionSummary(id, clock, distributionStatisticConfig, scale,
+                config.step().toMillis(), false);
     }
 
 
@@ -204,6 +214,58 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
         @Override
         public void writeTo(JsonGenerator generator) throws IOException {
             generator.writeStringField("type", "counter");
+            generator.writeNumberField("amt", this.amount);
+        }
+    }
+
+
+    private class DirectLoggingDistributionSummary extends StepDistributionSummary {
+
+        private final Logger directLogger;
+        private final Marker tags;
+
+
+        public DirectLoggingDistributionSummary(Id id, Clock clock,
+                DistributionStatisticConfig distributionStatisticConfig, double scale, long stepMillis,
+                boolean supportsAggregablePercentiles) {
+            super(id, clock, distributionStatisticConfig, scale, stepMillis, supportsAggregablePercentiles);
+
+            this.directLogger = getDirectLogger(this);
+            this.tags = printTags(this);
+        }
+
+
+        @Override
+        protected void recordNonNegative(double amount) {
+            super.recordNonNegative(amount);
+
+            if (this.directLogger.isInfoEnabled()) {
+                this.directLogger.info(this.tags, null, new DistributionSummaryEvent(amount));
+            }
+        }
+    }
+
+
+    private static class DistributionSummaryEvent implements StructuredArgument {
+
+        @Getter
+        private double amount;
+
+
+        public DistributionSummaryEvent(double amount) {
+            this.amount = amount;
+        }
+
+
+        @Override
+        public String toString() {
+            return "type=\"dsum\",amt=" + this.amount;
+        }
+
+
+        @Override
+        public void writeTo(JsonGenerator generator) throws IOException {
+            generator.writeStringField("type", "dsum");
             generator.writeNumberField("amt", this.amount);
         }
     }

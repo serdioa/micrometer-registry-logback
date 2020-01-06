@@ -3,13 +3,18 @@ package de.serdioa.micrometer.core.instrument.directlogging;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.core.JsonGenerator;
+import io.micrometer.core.instrument.AbstractMeter;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.LongTaskTimer;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.Timer;
@@ -19,7 +24,9 @@ import io.micrometer.core.instrument.step.StepCounter;
 import io.micrometer.core.instrument.step.StepDistributionSummary;
 import io.micrometer.core.instrument.step.StepMeterRegistry;
 import io.micrometer.core.instrument.step.StepTimer;
+import io.micrometer.core.instrument.util.MeterEquivalence;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
+import io.micrometer.core.instrument.util.TimeUtils;
 import lombok.Getter;
 import net.logstash.logback.argument.StructuredArgument;
 import net.logstash.logback.marker.Markers;
@@ -83,6 +90,12 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
             DistributionStatisticConfig distributionStatisticConfig, double scale) {
         return new DirectLoggingDistributionSummary(id, clock, distributionStatisticConfig, scale,
                 config.step().toMillis(), false);
+    }
+    
+    
+    @Override
+    protected LongTaskTimer newLongTaskTimer(Meter.Id id) {
+        return new DirectLoggingLongTaskTimer(id, this.clock);
     }
 
 
@@ -266,6 +279,146 @@ public class DirectLoggingMeterRegistry extends StepMeterRegistry {
         @Override
         public void writeTo(JsonGenerator generator) throws IOException {
             generator.writeStringField("type", "dsum");
+            generator.writeNumberField("amt", this.amount);
+        }
+    }
+
+
+    private class DirectLoggingLongTaskTimer extends AbstractMeter implements LongTaskTimer {
+
+        private final ConcurrentMap<Long, Long> tasks = new ConcurrentHashMap<>();
+        private final AtomicLong nextTask = new AtomicLong(0L);
+        private final Clock clock;
+
+        private final Logger directLogger;
+        private final Marker tags;
+
+
+        public DirectLoggingLongTaskTimer(Id id, Clock clock) {
+            super(id);
+            this.clock = clock;
+
+            this.directLogger = getDirectLogger(this);
+            this.tags = printTags(this);
+        }
+
+
+        @Override
+        public Sample start() {
+            long task = nextTask.getAndIncrement();
+            tasks.put(task, clock.monotonicTime());
+
+            if (this.directLogger.isInfoEnabled()) {
+                this.directLogger.info(this.tags, null, new DirectLoggingLongTaskStartEvent(task));
+            }
+
+            return new Sample(this, task);
+        }
+
+
+        @Override
+        public long stop(long task) {
+            Long startTime = tasks.remove(task);
+            long amount = (startTime != null ? clock.monotonicTime() - startTime : -1);
+
+            if (this.directLogger.isInfoEnabled()) {
+                this.directLogger.info(this.tags, null, new DirectLoggingLongTaskStopEvent(task, amount));
+            }
+
+            return amount;
+        }
+
+
+        @Override
+        public double duration(long task, TimeUnit unit) {
+            Long startTime = tasks.get(task);
+            return (startTime != null) ? TimeUtils.nanosToUnit(clock.monotonicTime() - startTime, unit) : -1L;
+        }
+
+
+        @Override
+        public double duration(TimeUnit unit) {
+            long now = clock.monotonicTime();
+            long sum = 0L;
+            for (long startTime : tasks.values()) {
+                sum += now - startTime;
+            }
+            return TimeUtils.nanosToUnit(sum, unit);
+        }
+
+
+        @Override
+        public int activeTasks() {
+            return tasks.size();
+        }
+
+
+        @SuppressWarnings("EqualsWhichDoesntCheckParameterClass")
+        @Override
+        public boolean equals(Object o) {
+            return MeterEquivalence.equals(this, o);
+        }
+
+
+        @Override
+        public int hashCode() {
+            return MeterEquivalence.hashCode(this);
+        }
+    }
+
+
+    private static class DirectLoggingLongTaskStartEvent implements StructuredArgument {
+
+        @Getter
+        private final long task;
+
+
+        public DirectLoggingLongTaskStartEvent(final long task) {
+            this.task = task;
+        }
+
+
+        @Override
+        public String toString() {
+            return "type=\"ltask\",ev=\"start\",task=" + this.task;
+        }
+
+
+        @Override
+        public void writeTo(JsonGenerator generator) throws IOException {
+            generator.writeStringField("type", "ltask");
+            generator.writeStringField("ev", "start");
+            generator.writeNumberField("task", this.task);
+        }
+    }
+
+
+    private static class DirectLoggingLongTaskStopEvent implements StructuredArgument {
+
+        @Getter
+        private final long task;
+
+        @Getter
+        private final long amount;
+
+
+        public DirectLoggingLongTaskStopEvent(final long task, final long amount) {
+            this.task = task;
+            this.amount = amount;
+        }
+
+
+        @Override
+        public String toString() {
+            return "type=\"ltask\",ev=\"stop\",task=" + this.task + ",amt=" + this.amount;
+        }
+
+
+        @Override
+        public void writeTo(JsonGenerator generator) throws IOException {
+            generator.writeStringField("type", "ltask");
+            generator.writeStringField("ev", "stop");
+            generator.writeNumberField("task", this.task);
             generator.writeNumberField("amt", this.amount);
         }
     }

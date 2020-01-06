@@ -1,0 +1,6 @@
+Benchmark                             (loggingMode)  (metricsMode)  Mode  Cnt    Score   Error  Units
+LongTaskTimerBenchmark.timer                   noop        logging  avgt   10   88.049 ± 0.870  ns/op
+LongTaskTimerBenchmark.timerWithTags           noop        logging  avgt   10   85.372 ± 0.796  ns/op
+LongTaskTimerBenchmark.timer                  async        logging  avgt   10  153.332 ± 5.347  ns/op
+LongTaskTimerBenchmark.timerWithTags          async        logging  avgt   10  155.370 ± 4.388  ns/op
+

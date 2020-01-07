@@ -1,29 +1,12 @@
-Benchmark                                  (loggingMode)  (metricsMode)  Mode  Cnt     Score     Error  Units
+Benchmark                                    (loggingMode)  (metricsMode)  Mode  Cnt    Score    Error  Units
+DistributionSummaryBenchmark.record                   noop         simple  avgt   10   29.175 ±  0.579  ns/op
+DistributionSummaryBenchmark.recordWithTags           noop         simple  avgt   10   29.035 ±  0.542  ns/op
 
-CounterBenchmark.increment                          noop         simple  avgt   10     8.461 ±   0.007  ns/op
-CounterBenchmark.increment                          sync         simple  avgt   10     8.464 ±   0.007  ns/op
-CounterBenchmark.increment                         async         simple  avgt   10     8.460 ±   0.004  ns/op
-CounterBenchmark.incrementByValue                   noop         simple  avgt   10     8.249 ±   0.002  ns/op
-CounterBenchmark.incrementByValue                   sync         simple  avgt   10     8.238 ±   0.001  ns/op
-CounterBenchmark.incrementByValue                  async         simple  avgt   10     8.248 ±   0.001  ns/op
-CounterBenchmark.incrementByValueWithTags           noop         simple  avgt   10     8.238 ±   0.002  ns/op
-CounterBenchmark.incrementByValueWithTags           sync         simple  avgt   10     8.240 ±   0.004  ns/op
-CounterBenchmark.incrementByValueWithTags          async         simple  avgt   10     8.242 ±   0.008  ns/op
-CounterBenchmark.incrementWithTags                  noop         simple  avgt   10     8.457 ±   0.004  ns/op
-CounterBenchmark.incrementWithTags                  sync         simple  avgt   10     8.459 ±   0.003  ns/op
-CounterBenchmark.incrementWithTags                 async         simple  avgt   10     8.461 ±   0.002  ns/op
+DistributionSummaryBenchmark.record                   noop        logging  avgt   10   73.817 ±  0.910  ns/op
+DistributionSummaryBenchmark.recordWithTags           noop        logging  avgt   10   77.641 ±  0.527  ns/op
 
-CounterBenchmark.increment                          noop        logging  avgt   10    74.222 ±   0.128  ns/op
-CounterBenchmark.incrementByValue                   noop        logging  avgt   10    74.280 ±   0.169  ns/op
-CounterBenchmark.incrementByValueWithTags           noop        logging  avgt   10    75.190 ±   0.090  ns/op
-CounterBenchmark.incrementWithTags                  noop        logging  avgt   10    74.233 ±   0.080  ns/op
+DistributionSummaryBenchmark.record                  async         simple  avgt   10   29.062 ±  0.455  ns/op
+DistributionSummaryBenchmark.recordWithTags          async         simple  avgt   10   29.008 ±  0.436  ns/op
 
-CounterBenchmark.increment                         async        logging  avgt   10   135.481 ±   5.746  ns/op
-CounterBenchmark.incrementByValue                  async        logging  avgt   10   139.066 ±   5.128  ns/op
-CounterBenchmark.incrementByValueWithTags          async        logging  avgt   10   142.032 ±   6.817  ns/op
-CounterBenchmark.incrementWithTags                 async        logging  avgt   10   132.693 ±   2.799  ns/op
-
-CounterBenchmark.increment                          sync        logging  avgt   10  5026.906 ± 410.110  ns/op
-CounterBenchmark.incrementByValue                   sync        logging  avgt   10  5144.419 ± 572.361  ns/op
-CounterBenchmark.incrementByValueWithTags           sync        logging  avgt   10  5534.798 ± 794.722  ns/op
-CounterBenchmark.incrementWithTags                  sync        logging  avgt   10  4769.169 ± 426.545  ns/op
+DistributionSummaryBenchmark.record                  async        logging  avgt   10  139.719 ±  5.542  ns/op
+DistributionSummaryBenchmark.recordWithTags          async        logging  avgt   10  214.469 ± 62.660  ns/op

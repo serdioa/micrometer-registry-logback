@@ -67,7 +67,7 @@ public class DistributionSummaryBenchmark {
                 throw new IllegalStateException("Unexpected metricsMode:" + this.metricsMode);
         }
         this.ds = DistributionSummary.builder("c1").register(this.meterRegistry);
-        this.ds = DistributionSummary.builder("c2")
+        this.dsWithTags = DistributionSummary.builder("c2")
                 .tags("k1", "v1", "k2", "v2")
                 .register(this.meterRegistry);
 

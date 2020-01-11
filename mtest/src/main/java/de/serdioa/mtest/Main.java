@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingMeterRegistry;
 import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingRegistryConfig;
+import de.serdioa.micrometer.core.instrument.directlogging.LoggingMeterRegistry;
+import de.serdioa.micrometer.core.instrument.directlogging.LoggingRegistryConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
@@ -30,7 +32,7 @@ public class Main {
     private Main() {
         final MeterRegistry simpleMeterRegistry = new SimpleMeterRegistry();
 
-        final DirectLoggingRegistryConfig loggingRegistryConfig = new DirectLoggingRegistryConfig() {
+        final DirectLoggingRegistryConfig directLoggingRegistryConfig = new DirectLoggingRegistryConfig() {
             @Override
             public Duration step() {
                 return Duration.ofSeconds(10);
@@ -41,7 +43,22 @@ public class Main {
                 return null;
             }
         };
-        final DirectLoggingMeterRegistry loggingMeterRegistry = new DirectLoggingMeterRegistry(loggingRegistryConfig);
+        final DirectLoggingMeterRegistry directLoggingMeterRegistry =
+                new DirectLoggingMeterRegistry(directLoggingRegistryConfig);
+
+        final LoggingRegistryConfig loggingRegistryConfig = new LoggingRegistryConfig() {
+            @Override
+            public Duration step() {
+                return Duration.ofSeconds(10);
+            }
+
+            @Override
+            public String get(String key) {
+                return null;
+            }
+        };
+        final LoggingMeterRegistry loggingMeterRegistry = new LoggingMeterRegistry(loggingRegistryConfig);
+
 
         final CompositeMeterRegistry compositeRegistry = new CompositeMeterRegistry();
         compositeRegistry.add(simpleMeterRegistry);
@@ -50,7 +67,7 @@ public class Main {
         this.meterRegistry = compositeRegistry;
 
         this.publisher = new MetricsPublisher(this.meterRegistry);
-        this.consumer = new MetricsConsumer(this.meterRegistry);
+        this.consumer = new MetricsConsumer(this.meterRegistry, false);
 
         this.publisherThread = new Thread(this.publisher);
         this.consumerThread = new Thread(this.consumer);

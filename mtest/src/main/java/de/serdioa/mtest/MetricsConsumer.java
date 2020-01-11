@@ -9,16 +9,23 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 public class MetricsConsumer implements Runnable {
     private final MeterRegistry meterRegistry;
+    private final boolean enabled;
 
     public MetricsConsumer(MeterRegistry meterRegistry) {
+        this(meterRegistry, true);
+    }
+
+
+    public MetricsConsumer(MeterRegistry meterRegistry, boolean enabled) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
-}
+        this.enabled = enabled;
+    }
 
 
     @Override
     public void run() {
         try {
-            while (true) {
+            while (!Thread.interrupted()) {
                 consume();
             }
         } catch (InterruptedException ex) {
@@ -29,13 +36,15 @@ public class MetricsConsumer implements Runnable {
 
 
     private void consume() throws InterruptedException {
-        final StringBuilder sb = new StringBuilder("Consumer:\n");
+        if (enabled) {
+            final StringBuilder sb = new StringBuilder("Consumer:\n");
 
-        for (Meter m : this.meterRegistry.getMeters()) {
-            sb.append("    ").append(publishMeter(m)).append("\n");
+            for (Meter m : this.meterRegistry.getMeters()) {
+                sb.append("    ").append(publishMeter(m)).append("\n");
+            }
+
+            System.out.println(sb);
         }
-
-        System.out.println(sb);
 
         Thread.sleep(1000);
     }

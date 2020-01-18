@@ -1,5 +1,6 @@
 package de.serdioa.mtest;
 
+import java.time.Duration;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -17,6 +18,9 @@ public class TimerPublisher implements Runnable {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
         this.timer = Timer.builder("publisher.timer")
+                .publishPercentileHistogram()
+                .minimumExpectedValue(Duration.ofMillis(50))
+                .maximumExpectedValue(Duration.ofMillis(150))
                 .tags("t.\n1", "v.\n1", "t.2", "v.2")
                 .register(this.meterRegistry);
     }

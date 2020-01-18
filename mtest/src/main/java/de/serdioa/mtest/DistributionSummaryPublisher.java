@@ -16,6 +16,9 @@ public class DistributionSummaryPublisher implements Runnable {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
         this.ds = DistributionSummary.builder("publisher.ds")
+                .publishPercentileHistogram()
+                .minimumExpectedValue(1L)
+                .maximumExpectedValue(50L)
                 .tags("c.\n1", "v.\n1", "c.2", "v.2")
                 .register(this.meterRegistry);
     }

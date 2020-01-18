@@ -97,7 +97,13 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishDistributionSummary(DistributionSummary summary) {
+        LoggingMeter loggingMeter = (LoggingMeter) summary;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        StructuredArgument snapshot = new JsonDistributionSummarySnapshot(summary);
+
+        logger.info(tags, null, snapshot);
     }
 
 
@@ -150,6 +156,17 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Marker tags = getTags(id);
 
         return new LoggingTimer(id, this.clock, distributionStatisticConfig, pauseDetector, getBaseTimeUnit(),
+                this.config.step().toMillis(), true, logger, tags);
+    }
+
+
+    @Override
+    protected DistributionSummary newDistributionSummary(Meter.Id id,
+            DistributionStatisticConfig distributionStatisticConfig, double scale) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingDistributionSummary(id, this.clock, distributionStatisticConfig, scale,
                 this.config.step().toMillis(), true, logger, tags);
     }
 }

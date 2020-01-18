@@ -11,7 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 
-/* package private */ class LoggingDistributionSummary extends StepDistributionSummary {
+/* package private */ class LoggingDistributionSummary extends StepDistributionSummary implements LoggingMeter {
 
     @Getter
     private final Logger logger;

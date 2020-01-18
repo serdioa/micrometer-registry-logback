@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 
-/* package private */ class LoggingCounter extends StepCounter {
+/* package private */ class LoggingCounter extends StepCounter implements LoggingMeter {
 
     @Getter
     private final Logger logger;

@@ -48,15 +48,15 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         this.getMeters().stream()
                 .sorted(DefaultMeterComparator.INSTANCE)
                 .forEach(m -> m.use(
-                        this::publishGauge,
-                        this::publishCounter,
-                        this::publishTimer,
-                        this::publishDistributionSummary,
-                        this::publishLongTaskTimer,
-                        this::publishTimeGauge,
-                        this::publishFunctionCounter,
-                        this::publishFunctionTimer,
-                        this::publishMeter));
+                this::publishGauge,
+                this::publishCounter,
+                this::publishTimer,
+                this::publishDistributionSummary,
+                this::publishLongTaskTimer,
+                this::publishTimeGauge,
+                this::publishFunctionCounter,
+                this::publishFunctionTimer,
+                this::publishMeter));
     }
 
 
@@ -66,15 +66,21 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishCounter(Counter counter) {
+        LoggingMeter loggingMeter = (LoggingMeter) counter;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        CounterSnapshot snapshot = new JsonCounterSnapshot(counter);
+
+        logger.info(tags, null, snapshot);
     }
 
 
     private void publishTimer(Timer timer) {
-        LoggingTimer loggingTimer = (LoggingTimer) timer;
+        LoggingMeter loggingMeter = (LoggingMeter) timer;
 
-        Logger logger = loggingTimer.getLogger();
-        Marker tags = loggingTimer.getTags();
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
         TimerSnapshot snapshot = new JsonTimerSnapshot(timer);
 
         logger.info(tags, null, snapshot);
@@ -112,11 +118,20 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     @Override
+    protected Counter newCounter(Meter.Id id) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingCounter(id, this.clock, this.config.step().toMillis(), logger, tags);
+    }
+
+
+    @Override
     protected Timer newTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector) {
         Logger logger = getMeterLogger(id);
         Marker tags = getTags(id);
 
-        return new LoggingTimer(id, clock, distributionStatisticConfig, pauseDetector, getBaseTimeUnit(),
+        return new LoggingTimer(id, this.clock, distributionStatisticConfig, pauseDetector, getBaseTimeUnit(),
                 this.config.step().toMillis(), true, logger, tags);
     }
 }

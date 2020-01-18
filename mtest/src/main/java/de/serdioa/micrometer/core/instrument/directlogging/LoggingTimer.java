@@ -13,7 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.Marker;
 
 
-/* package private */ class LoggingTimer extends StepTimer {
+/* package private */ class LoggingTimer extends StepTimer implements LoggingMeter {
 
     @Getter
     protected final Logger logger;

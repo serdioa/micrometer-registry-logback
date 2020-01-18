@@ -2,6 +2,7 @@ package de.serdioa.micrometer.core.instrument.directlogging;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
+import java.util.function.ToDoubleFunction;
 
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Counter;
@@ -16,6 +17,8 @@ import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.instrument.util.NamedThreadFactory;
+import io.micrometer.core.lang.Nullable;
+import net.logstash.logback.argument.StructuredArgument;
 import org.slf4j.Logger;
 import org.slf4j.Marker;
 
@@ -61,7 +64,13 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishGauge(Gauge gauge) {
+        LoggingMeter loggingMeter = (LoggingMeter) gauge;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        StructuredArgument snapshot = new JsonGaugeSnapshot(gauge);
+
+        logger.info(tags, null, snapshot);
     }
 
 
@@ -70,7 +79,7 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
         Logger logger = loggingMeter.getLogger();
         Marker tags = loggingMeter.getTags();
-        CounterSnapshot snapshot = new JsonCounterSnapshot(counter);
+        StructuredArgument snapshot = new JsonCounterSnapshot(counter);
 
         logger.info(tags, null, snapshot);
     }
@@ -81,7 +90,7 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
         Logger logger = loggingMeter.getLogger();
         Marker tags = loggingMeter.getTags();
-        TimerSnapshot snapshot = new JsonTimerSnapshot(timer);
+        StructuredArgument snapshot = new JsonTimerSnapshot(timer);
 
         logger.info(tags, null, snapshot);
     }
@@ -114,6 +123,15 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
     private void publishMeter(Meter meter) {
 
+    }
+
+
+    @Override
+    protected <T> Gauge newGauge(Meter.Id id, @Nullable T obj, ToDoubleFunction<T> valueFunction) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingGauge(id, obj, valueFunction, logger, tags);
     }
 
 

@@ -16,10 +16,10 @@ import org.slf4j.Marker;
 /* package private */ class LoggingTimer extends StepTimer implements LoggingMeter {
 
     @Getter
-    protected final Logger logger;
+    private final Logger logger;
 
     @Getter
-    protected final Marker tags;
+    private final Marker tags;
 
 
     protected LoggingTimer(Meter.Id id, Clock clock, DistributionStatisticConfig distributionStatisticConfig,

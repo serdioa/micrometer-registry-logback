@@ -11,13 +11,23 @@ import lombok.ToString;
 /* package private */ class LongTaskTimerSnapshot {
 
     @Getter
+    protected final TimeUnit baseTimeUnit;
+
+    @Getter
     protected final int activeTasks;
 
     @Getter
     protected final double duration;
 
+
     public LongTaskTimerSnapshot(LongTaskTimer longTaskTimer) {
+        if (longTaskTimer instanceof ExtendedLongTaskTimer) {
+            this.baseTimeUnit = ((ExtendedLongTaskTimer) longTaskTimer).baseTimeUnit();
+        } else {
+            this.baseTimeUnit = TimeUnit.NANOSECONDS;
+        }
+
         this.activeTasks = longTaskTimer.activeTasks();
-        this.duration = longTaskTimer.duration(TimeUnit.NANOSECONDS);
+        this.duration = longTaskTimer.duration(this.baseTimeUnit);
     }
 }

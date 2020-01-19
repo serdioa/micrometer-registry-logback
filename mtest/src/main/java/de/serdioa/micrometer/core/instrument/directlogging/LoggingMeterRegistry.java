@@ -161,7 +161,7 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Logger logger = getMeterLogger(id);
         Marker tags = getTags(id);
 
-        return new LoggingTimer(id, this.clock, distributionStatisticConfig, pauseDetector, getBaseTimeUnit(),
+        return new LoggingTimer(id, this.clock, distributionStatisticConfig, pauseDetector, this.getBaseTimeUnit(),
                 this.config.step().toMillis(), true, logger, tags);
     }
 
@@ -182,6 +182,6 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Logger logger = getMeterLogger(id);
         Marker tags = getTags(id);
 
-        return new LoggingLongTaskTimer(id, this.clock, logger, tags);
+        return new LoggingLongTaskTimer(id, this.clock, this.getBaseTimeUnit(), logger, tags);
     }
 }

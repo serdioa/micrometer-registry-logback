@@ -17,6 +17,7 @@ public class JsonLongTaskTimerSnapshot extends LongTaskTimerSnapshot implements 
     @Override
     public void writeTo(JsonGenerator generator) throws IOException {
         generator.writeStringField("t", "ltt");
+        generator.writeStringField("unit", this.baseTimeUnit.toString());
         generator.writeNumberField("tasks", this.activeTasks);
         generator.writeNumberField("dur", this.duration);
     }

@@ -2,6 +2,7 @@ package de.serdioa.micrometer.core.instrument.directlogging;
 
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 
 import io.micrometer.core.instrument.Clock;
@@ -119,7 +120,13 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishTimeGauge(TimeGauge timeGauge) {
+        LoggingMeter loggingMeter = (LoggingMeter) timeGauge;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        StructuredArgument snapshot = new JsonTimeGaugeSnapshot(timeGauge);
+
+        logger.info(tags, null, snapshot);
     }
 
 
@@ -183,5 +190,14 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Marker tags = getTags(id);
 
         return new LoggingLongTaskTimer(id, this.clock, this.getBaseTimeUnit(), logger, tags);
+    }
+
+
+    @Override
+    protected <T> TimeGauge newTimeGauge(Meter.Id id, T obj, TimeUnit valueFunctionUnit, ToDoubleFunction<T> valueFunction) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingTimeGauge(id, obj, valueFunctionUnit, valueFunction, this.getBaseTimeUnit(), logger, tags);
     }
 }

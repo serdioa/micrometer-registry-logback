@@ -17,7 +17,7 @@ public class TimeGaugePublisher implements Runnable {
     public TimeGaugePublisher(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
-        TimeGauge.builder("publisher.timeGauge", this.timeGauge, TimeUnit.MILLISECONDS, Number::doubleValue)
+        TimeGauge.builder("publisher.timeGauge", this.timeGauge, TimeUnit.SECONDS, Number::doubleValue)
                 .tags("tg.\n1", "v.\n1", "tg.2", "v.2")
                 .register(this.meterRegistry);
     }
@@ -38,7 +38,7 @@ public class TimeGaugePublisher implements Runnable {
 
 
     private void publish() throws InterruptedException {
-        int value = this.rnd.nextInt(1000);
+        int value = this.rnd.nextInt(10);
         this.timeGauge.setValue(value);
 
         long sleep = (long) (this.rnd.nextInt(1000));

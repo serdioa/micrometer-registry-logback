@@ -108,7 +108,13 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishLongTaskTimer(LongTaskTimer longTaskTimer) {
+        LoggingMeter loggingMeter = (LoggingMeter) longTaskTimer;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        StructuredArgument snapshot = new JsonLongTaskTimerSnapshot(longTaskTimer);
+
+        logger.info(tags, null, snapshot);
     }
 
 
@@ -168,5 +174,14 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
         return new LoggingDistributionSummary(id, this.clock, distributionStatisticConfig, scale,
                 this.config.step().toMillis(), true, logger, tags);
+    }
+
+
+    @Override
+    protected LongTaskTimer newLongTaskTimer(Meter.Id id) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingLongTaskTimer(id, this.clock, logger, tags);
     }
 }

@@ -24,7 +24,8 @@ public class MetricsPublisher implements Runnable {
 //        addPublisher(new CounterPublisher(this.meterRegistry), "counter-publisher");
 //        addPublisher(new DistributionSummaryPublisher(this.meterRegistry), "ds-publisher");
 //        addPublisher(new LongTaskTimerPublisher(this.meterRegistry), "ltt-publisher");
-        addPublisher(new FunctionCounterPublisher(this.meterRegistry), "function-counter-publisher");
+//        addPublisher(new FunctionCounterPublisher(this.meterRegistry), "function-counter-publisher");
+        addPublisher(new FunctionTimerPublisher(this.meterRegistry), "function-timer-publisher");
     }
 
 

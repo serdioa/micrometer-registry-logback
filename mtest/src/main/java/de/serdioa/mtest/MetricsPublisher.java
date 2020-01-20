@@ -18,12 +18,13 @@ public class MetricsPublisher implements Runnable {
 
 //        addPublisher(new JvmMetricsPublisher(this.meterRegistry), "jvm-publisher");
 
-        addPublisher(new TimerPublisher(this.meterRegistry), "timer-publisher");
+//        addPublisher(new TimerPublisher(this.meterRegistry), "timer-publisher");
 //        addPublisher(new GaugePublisher(this.meterRegistry), "gauge-publisher");
 //        addPublisher(new TimeGaugePublisher(this.meterRegistry), "time-gauge-publisher");
 //        addPublisher(new CounterPublisher(this.meterRegistry), "counter-publisher");
 //        addPublisher(new DistributionSummaryPublisher(this.meterRegistry), "ds-publisher");
 //        addPublisher(new LongTaskTimerPublisher(this.meterRegistry), "ltt-publisher");
+        addPublisher(new FunctionCounterPublisher(this.meterRegistry), "function-counter-publisher");
     }
 
 

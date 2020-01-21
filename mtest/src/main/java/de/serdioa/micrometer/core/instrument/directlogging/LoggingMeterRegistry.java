@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
+import java.util.function.ToLongFunction;
 
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Counter;
@@ -131,12 +132,24 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishFunctionCounter(FunctionCounter functionCounter) {
+        LoggingMeter loggingMeter = (LoggingMeter) functionCounter;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        StructuredArgument snapshot = new JsonFunctionCounterSnapshot(functionCounter);
+
+        logger.info(tags, null, snapshot);
     }
 
 
     private void publishFunctionTimer(FunctionTimer functionTimer) {
+        LoggingMeter loggingMeter = (LoggingMeter) functionTimer;
 
+        Logger logger = loggingMeter.getLogger();
+        Marker tags = loggingMeter.getTags();
+        StructuredArgument snapshot = new JsonFunctionTimerSnapshot(functionTimer);
+
+        logger.info(tags, null, snapshot);
     }
 
 
@@ -199,5 +212,26 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Marker tags = getTags(id);
 
         return new LoggingTimeGauge(id, obj, valueFunctionUnit, valueFunction, this.getBaseTimeUnit(), logger, tags);
+    }
+
+
+    @Override
+    protected <T> FunctionCounter newFunctionCounter(Meter.Id id, T obj, ToDoubleFunction<T> countFunction) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingFunctionCounter<>(id, this.clock, this.config.step().toMillis(), obj, countFunction,
+                logger, tags);
+    }
+
+
+    @Override
+    protected <T> FunctionTimer newFunctionTimer(Meter.Id id, T obj, ToLongFunction<T> countFunction,
+            ToDoubleFunction<T> totalTimeFunction, TimeUnit totalTimeFunctionUnit) {
+        Logger logger = getMeterLogger(id);
+        Marker tags = getTags(id);
+
+        return new LoggingFunctionTimer<>(id, this.clock, this.config.step().toMillis(), obj, countFunction,
+                totalTimeFunction, totalTimeFunctionUnit, this.getBaseTimeUnit(), logger, tags);
     }
 }

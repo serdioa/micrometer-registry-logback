@@ -36,9 +36,12 @@ public class LogbackConfigurator {
     public static final Level DEFAULT_LEVEL = Level.INFO;
     public static final String DEFAULT_FILE_NAME = "logback.log";
 
-
-    public enum Type {
+    public enum Destination {
         NOOP, CONSOLE, FILE
+    }
+    
+    public enum EncoderType {
+        PLAIN, JSONLOGSTASH
     }
 
     @Setter
@@ -48,13 +51,13 @@ public class LogbackConfigurator {
     private Level level = DEFAULT_LEVEL;
 
     @Setter
-    private boolean json = false;
+    private EncoderType encoderType = EncoderType.PLAIN;
 
     @Setter
     private boolean asynchronous = false;
 
     @Setter
-    private Type type = Type.CONSOLE;
+    private Destination destination = Destination.CONSOLE;
 
     @Setter
     private String fileName = DEFAULT_FILE_NAME;
@@ -64,8 +67,8 @@ public class LogbackConfigurator {
         new LogbackConfigurator()
                 .pattern("%logger %msg%n")
                 .asynchronous(false)
-                .json(false)
-                .type(Type.CONSOLE)
+                .encoderType(EncoderType.PLAIN)
+                .destination(Destination.CONSOLE)
                 .level(Level.DEBUG)
                 .configure();
 
@@ -143,10 +146,13 @@ public class LogbackConfigurator {
 
 
     private Encoder<ILoggingEvent> encoder(LoggerContext logCtx) {
-        if (this.json) {
-            return jsonEncoder(logCtx);
-        } else {
-            return plainEncoder(logCtx);
+        switch (this.encoderType) {
+            case PLAIN:
+                return plainEncoder(logCtx);
+            case JSONLOGSTASH:
+                return jsonEncoder(logCtx);
+            default:
+                throw new IllegalArgumentException("Unexpected encoder type: " + this.encoderType);
         }
     }
 
@@ -184,7 +190,7 @@ public class LogbackConfigurator {
 
     private Appender<ILoggingEvent> appender(LoggerContext logCtx, Encoder<ILoggingEvent> encoder) {
         Appender<ILoggingEvent> appender;
-        switch (this.type) {
+        switch (this.destination) {
             case NOOP:
                 appender = noopAppender(logCtx);
                 break;
@@ -195,7 +201,7 @@ public class LogbackConfigurator {
                 appender = fileAppender(logCtx, encoder);
                 break;
             default:
-                throw new IllegalStateException("Unexpected type: " + this.type);
+                throw new IllegalStateException("Unexpected destination: " + this.destination);
         }
 
         if (this.asynchronous) {

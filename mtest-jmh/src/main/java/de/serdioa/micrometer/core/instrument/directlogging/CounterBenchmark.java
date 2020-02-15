@@ -76,23 +76,24 @@ public class CounterBenchmark {
         }
         this.index = 0;
 
-        LogbackConfigurator logbackConfig = new LogbackConfigurator().json(true);
+        LogbackConfigurator logbackConfig = new LogbackConfigurator().encoderType(
+                LogbackConfigurator.EncoderType.JSONLOGSTASH);
         switch (this.loggingMode) {
             case "noop":
-                logbackConfig.type(LogbackConfigurator.Type.NOOP);
+                logbackConfig.destination(LogbackConfigurator.Destination.NOOP);
                 break;
             case "sync":
-                logbackConfig.type(LogbackConfigurator.Type.FILE)
+                logbackConfig.destination(LogbackConfigurator.Destination.FILE)
                         .fileName("logback-sync." + this.metricsMode + ".log")
                         .asynchronous(false);
                 break;
             case "async":
-                logbackConfig.type(LogbackConfigurator.Type.FILE)
+                logbackConfig.destination(LogbackConfigurator.Destination.FILE)
                         .fileName("logback-async." + this.metricsMode + ".log")
                         .asynchronous(true);
                 break;
             case "console":
-                logbackConfig.type(LogbackConfigurator.Type.CONSOLE)
+                logbackConfig.destination(LogbackConfigurator.Destination.CONSOLE)
                         .asynchronous(true);
             default:
             // Skip

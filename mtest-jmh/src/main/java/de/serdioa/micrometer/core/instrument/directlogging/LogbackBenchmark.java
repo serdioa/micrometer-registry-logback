@@ -32,13 +32,13 @@ import org.slf4j.LoggerFactory;
 public class LogbackBenchmark {
 
     @Param({"NOOP", "CONSOLE", "FILE"})
-    private LogbackConfigurator.Type logbackType;
+    private LogbackConfigurator.Destination destination;
 
     @Param({"true", "false"})
     private boolean asynchronous;
 
-    @Param({"true", "false"})
-    private boolean json;
+    @Param({"PLAIN", "JSONLOGSTASH"})
+    private LogbackConfigurator.EncoderType encoderType;
 
     private final Logger logger = LoggerFactory.getLogger("test");
 
@@ -49,15 +49,15 @@ public class LogbackBenchmark {
         if (this.asynchronous) {
             sb.append(".async");
         }
-        if (this.json) {
+        if (this.encoderType == LogbackConfigurator.EncoderType.JSONLOGSTASH) {
             sb.append(".json");
         }
         sb.append(".log");
 
         new LogbackConfigurator()
-                .type(this.logbackType)
+                .destination(this.destination)
                 .asynchronous(this.asynchronous)
-                .json(this.json)
+                .encoderType(this.encoderType)
                 .fileName(sb.toString())
                 .configure();
     }

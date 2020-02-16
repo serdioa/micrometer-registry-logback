@@ -56,3 +56,33 @@ EncodeBenchmark.encode               5             2  avgt   10  1297.962 ±  4.
 EncodeBenchmark.encode               5             3  avgt   10  1247.740 ±  8.573  ns/op
 EncodeBenchmark.encode               5             5  avgt   10  1235.301 ±  8.464  ns/op
 EncodeBenchmark.encode               5            10  avgt   10  1283.147 ± 12.160  ns/op
+
+
+LogbackConfigurer, LogstashEncoder, everything except timestamp
+
+Benchmark               (markersCount)  (paramCount)  Mode  Cnt     Score    Error  Units
+EncodeBenchmark.encode               0             1  avgt   10   904.839 ±  8.118  ns/op
+EncodeBenchmark.encode               0             2  avgt   10   996.757 ±  8.834  ns/op
+EncodeBenchmark.encode               0             3  avgt   10  1029.698 ±  6.081  ns/op
+EncodeBenchmark.encode               0             5  avgt   10  1158.851 ±  8.844  ns/op
+EncodeBenchmark.encode               0            10  avgt   10  1390.639 ±  5.623  ns/op
+EncodeBenchmark.encode               1             1  avgt   10  1076.599 ±  5.549  ns/op
+EncodeBenchmark.encode               1             2  avgt   10  1148.063 ±  4.405  ns/op
+EncodeBenchmark.encode               1             3  avgt   10  1201.167 ±  8.309  ns/op
+EncodeBenchmark.encode               1             5  avgt   10  1306.344 ±  8.903  ns/op
+EncodeBenchmark.encode               1            10  avgt   10  1567.709 ±  5.484  ns/op
+EncodeBenchmark.encode               2             1  avgt   10  1145.095 ±  9.434  ns/op
+EncodeBenchmark.encode               2             2  avgt   10  1220.346 ± 17.342  ns/op
+EncodeBenchmark.encode               2             3  avgt   10  1302.570 ± 12.270  ns/op
+EncodeBenchmark.encode               2             5  avgt   10  1431.815 ± 20.351  ns/op
+EncodeBenchmark.encode               2            10  avgt   10  1659.490 ± 10.066  ns/op
+EncodeBenchmark.encode               3             1  avgt   10  1280.567 ± 33.227  ns/op
+EncodeBenchmark.encode               3             2  avgt   10  1336.425 ±  3.361  ns/op
+EncodeBenchmark.encode               3             3  avgt   10  1365.298 ±  2.187  ns/op
+EncodeBenchmark.encode               3             5  avgt   10  1486.558 ±  4.206  ns/op
+EncodeBenchmark.encode               3            10  avgt   10  1784.615 ±  5.206  ns/op
+EncodeBenchmark.encode               5             1  avgt   10  1443.794 ±  4.077  ns/op
+EncodeBenchmark.encode               5             2  avgt   10  1491.596 ±  3.287  ns/op
+EncodeBenchmark.encode               5             3  avgt   10  1589.486 ±  2.388  ns/op
+EncodeBenchmark.encode               5             5  avgt   10  1691.850 ±  2.500  ns/op
+EncodeBenchmark.encode               5            10  avgt   10  1882.988 ±  2.583  ns/op

@@ -9,6 +9,7 @@ import ch.qos.logback.core.ConsoleAppender;
 import ch.qos.logback.core.FileAppender;
 import ch.qos.logback.core.encoder.Encoder;
 import ch.qos.logback.core.helpers.NOPAppender;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.logstash.logback.appender.LoggingEventAsyncDisruptorAppender;
@@ -28,10 +29,6 @@ import org.slf4j.LoggerFactory;
 @Accessors(fluent = true)
 public class LogbackConfigurator {
 
-    private static final Logger loggerTest = LoggerFactory.getLogger("test");
-    private static final Logger loggerTestA = LoggerFactory.getLogger("test.A");
-    private static final Logger loggerTestB = LoggerFactory.getLogger("test.B");
-
     public static final String DEFAULT_PATTERN = "%d{yyyy-MM-dd'T'HH:mm:ss.SSS} %logger %msg%n";
     public static final Level DEFAULT_LEVEL = Level.INFO;
     public static final String DEFAULT_FILE_NAME = "logback.log";
@@ -39,7 +36,7 @@ public class LogbackConfigurator {
     public enum Destination {
         NOOP, CONSOLE, FILE
     }
-    
+
     public enum EncoderType {
         PLAIN, JSONLOGSTASH
     }
@@ -62,6 +59,15 @@ public class LogbackConfigurator {
     @Setter
     private String fileName = DEFAULT_FILE_NAME;
 
+    @Getter
+    private LoggerContext logCtx;
+
+    @Getter
+    private Encoder<ILoggingEvent> encoder;
+
+    @Getter
+    private Appender<ILoggingEvent> appender;
+
 
     public static void main(String[] args) throws Exception {
         new LogbackConfigurator()
@@ -80,6 +86,10 @@ public class LogbackConfigurator {
 
 
     private static void writeLogMessages() {
+        final Logger loggerTest = LoggerFactory.getLogger("test");
+        final Logger loggerTestA = LoggerFactory.getLogger("test.A");
+        final Logger loggerTestB = LoggerFactory.getLogger("test.B");
+
         // Plain-text messages
         loggerTest.trace("logger test: TRACE");
         loggerTest.debug("logger test: DEBUG");
@@ -129,13 +139,15 @@ public class LogbackConfigurator {
     }
 
 
-    public void configure() {
-        LoggerContext logCtx = (LoggerContext) LoggerFactory.getILoggerFactory();
-        logCtx.reset();
+    public LogbackConfigurator configure() {
+        this.logCtx = (LoggerContext) LoggerFactory.getILoggerFactory();
+        this.logCtx.reset();
 
-        Encoder<ILoggingEvent> encoder = encoder(logCtx);
-        Appender<ILoggingEvent> appender = appender(logCtx, encoder);
-        root(logCtx, appender);
+        this.encoder = encoder(this.logCtx);
+        this.appender = appender(this.logCtx, this.encoder);
+        root(this.logCtx, this.appender);
+
+        return this;
     }
 
 

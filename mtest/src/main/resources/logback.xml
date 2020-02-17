@@ -20,17 +20,26 @@
                 <logLevel/>
                 -->
                 <loggerName/>
-                <threadName/>
+                <!--<threadName/>-->
                 <logstashMarkers/>
                 <message/>
                 <arguments>
-                    <fieldName>@arguments</fieldName>
+<!--                    <fieldName>@arguments</fieldName> -->
                 </arguments>
             </providers>
         </encoder>
     </appender>
+    
+    <appender name="EVENTS" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="de.serdioa.micrometer.logback.MetricsEventEncoder"/>
+    </appender>
+    
+    <appender name="" class="ch.qos.logback.core.ConsoleAppender">
+        
+        
+    </appender>
 
     <root level="debug">
-        <appender-ref ref="JSON" />
+        <appender-ref ref="EVENTS" />
     </root>
 </configuration>

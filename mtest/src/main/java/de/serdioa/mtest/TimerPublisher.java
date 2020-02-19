@@ -18,6 +18,7 @@ public class TimerPublisher implements Runnable {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
         this.timer = Timer.builder("publisher.timer")
+                .publishPercentiles(0.5, 0.75, 0.9, 0.95)
                 .publishPercentileHistogram()
                 .minimumExpectedValue(Duration.ofMillis(50))
                 .maximumExpectedValue(Duration.ofMillis(150))

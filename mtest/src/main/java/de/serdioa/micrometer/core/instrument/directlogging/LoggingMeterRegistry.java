@@ -163,7 +163,7 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Logger logger = getMeterLogger(id);
         Marker tags = getTags(id);
 
-        return new LoggingGauge(id, obj, valueFunction, logger, tags);
+        return new LoggingGauge<>(id, obj, valueFunction, logger, tags);
     }
 
 
@@ -211,7 +211,7 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
         Logger logger = getMeterLogger(id);
         Marker tags = getTags(id);
 
-        return new LoggingTimeGauge(id, obj, valueFunctionUnit, valueFunction, this.getBaseTimeUnit(), logger, tags);
+        return new LoggingTimeGauge<>(id, obj, valueFunctionUnit, valueFunction, this.getBaseTimeUnit(), logger, tags);
     }
 
 

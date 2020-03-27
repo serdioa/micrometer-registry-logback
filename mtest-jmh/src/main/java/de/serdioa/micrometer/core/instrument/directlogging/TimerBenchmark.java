@@ -1,5 +1,7 @@
 package de.serdioa.micrometer.core.instrument.directlogging;
 
+import de.serdioa.micrometer.logging.direct.DirectLoggingMeterRegistry;
+
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 

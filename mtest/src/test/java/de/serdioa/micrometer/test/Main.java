@@ -2,10 +2,10 @@ package de.serdioa.micrometer.test;
 
 import java.time.Duration;
 
-import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingMeterRegistry;
-import de.serdioa.micrometer.core.instrument.directlogging.DirectLoggingRegistryConfig;
-import de.serdioa.micrometer.core.instrument.directlogging.LoggingMeterRegistry;
-import de.serdioa.micrometer.core.instrument.directlogging.LoggingRegistryConfig;
+import de.serdioa.micrometer.logging.direct.DirectLoggingMeterRegistry;
+import de.serdioa.micrometer.logging.direct.DirectLoggingRegistryConfig;
+import de.serdioa.micrometer.logging.agg.LoggingMeterRegistry;
+import de.serdioa.micrometer.logging.agg.LoggingRegistryConfig;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.simple.SimpleMeterRegistry;

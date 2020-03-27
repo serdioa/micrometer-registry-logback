@@ -41,7 +41,7 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private LoggingMeterRegistry(LoggingRegistryConfig config, Clock clock, ThreadFactory threadFactory) {
-        super(config, clock, threadFactory);
+        super(config, clock);
         this.config = Objects.requireNonNull(config);
 
         this.start(threadFactory);

@@ -2,7 +2,6 @@ package de.serdioa.micrometer.core.instrument.directlogging;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import io.micrometer.core.instrument.Clock;
@@ -21,7 +20,7 @@ public abstract class AbstractLoggingMeterRegistry extends StepMeterRegistry {
     private final StepRegistryConfig config;
 
 
-    protected AbstractLoggingMeterRegistry(StepRegistryConfig config, Clock clock, ThreadFactory threadFactory) {
+    protected AbstractLoggingMeterRegistry(StepRegistryConfig config, Clock clock) {
         super(config, clock);
         this.config = Objects.requireNonNull(config);
 

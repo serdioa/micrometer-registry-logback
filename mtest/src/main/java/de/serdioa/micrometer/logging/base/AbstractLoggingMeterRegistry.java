@@ -3,6 +3,9 @@ package de.serdioa.micrometer.logging.base;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.TimeUnit;
 
 import io.micrometer.core.instrument.Clock;
@@ -20,6 +23,11 @@ public abstract class AbstractLoggingMeterRegistry extends StepMeterRegistry {
 
     private final StepRegistryConfig config;
 
+    // Caches loggers for logging meters.
+    private final ConcurrentMap<Meter.Id, Logger> loggerCache = new ConcurrentHashMap<>();
+
+    // Caches log markers for logging meters.
+    private final ConcurrentMap<Meter.Id, Optional<? extends Marker>> tagsCache = new ConcurrentHashMap<>();
 
     protected AbstractLoggingMeterRegistry(StepRegistryConfig config, Clock clock) {
         super(config, clock);
@@ -36,27 +44,32 @@ public abstract class AbstractLoggingMeterRegistry extends StepMeterRegistry {
 
 
     protected Logger getMeterLogger(Meter.Id meterId) {
-        final String meterLoggerName = getMeterLoggerName(meterId);
+        return this.loggerCache.computeIfAbsent(meterId, this::buildMeterLogger);
+    }
+
+
+    private Logger buildMeterLogger(Meter.Id meterId) {
+        final String conventionName = this.getConventionName(meterId);
+        final String prefix = this.config.prefix();
+        final String meterLoggerName = (prefix == null ? conventionName : prefix + "." + conventionName);
+
         return LoggerFactory.getLogger(meterLoggerName);
     }
 
 
-    private String getMeterLoggerName(Meter.Id meterId) {
-        final String conventionName = this.getConventionName(meterId);
-        final String prefix = this.config.prefix();
-        return (prefix == null ? conventionName : prefix + "." + conventionName);
+    protected Marker getTags(Meter.Id meterId) {
+        return this.tagsCache.computeIfAbsent(meterId, this::buildTags).orElse(null);
     }
 
 
-    protected Marker getTags(Meter.Id meterId) {
+    private Optional<? extends Marker> buildTags(Meter.Id meterId) {
         final List<Tag> conventionTags = getConventionTags(meterId);
         if (conventionTags.isEmpty()) {
-            return null;
+            return Optional.empty();
         } else {
             return conventionTags.stream()
                     .map(t -> Markers.append(t.getKey(), t.getValue()))
-                    .reduce((first, second) -> first.and(second))
-                    .orElse(null);
+                    .reduce((first, second) -> first.and(second));
         }
     }
 }

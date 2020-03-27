@@ -17,6 +17,7 @@ public class GaugePublisher implements Runnable {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
         Gauge.builder("publisher.gauge", this.gauge, Number::doubleValue)
+                .baseUnit("milliseconds")
                 .tags("g.\n1", "v.\n1", "g.2", "v.2")
                 .register(this.meterRegistry);
     }

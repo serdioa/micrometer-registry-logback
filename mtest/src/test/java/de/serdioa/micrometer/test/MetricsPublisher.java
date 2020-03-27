@@ -16,15 +16,15 @@ public class MetricsPublisher implements Runnable {
     public MetricsPublisher(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
 
-//        addPublisher(new JvmMetricsPublisher(this.meterRegistry), "jvm-publisher");
+        // addPublisher(new JvmMetricsPublisher(this.meterRegistry), "jvm-publisher");
         addPublisher(new TimerPublisher(this.meterRegistry), "timer-publisher");
-//        addPublisher(new GaugePublisher(this.meterRegistry), "gauge-publisher");
-//        addPublisher(new TimeGaugePublisher(this.meterRegistry), "time-gauge-publisher");
-//        addPublisher(new CounterPublisher(this.meterRegistry), "counter-publisher");
-//        addPublisher(new DistributionSummaryPublisher(this.meterRegistry), "ds-publisher");
-//        addPublisher(new LongTaskTimerPublisher(this.meterRegistry), "ltt-publisher");
-//        addPublisher(new FunctionCounterPublisher(this.meterRegistry), "function-counter-publisher");
-//        addPublisher(new FunctionTimerPublisher(this.meterRegistry), "function-timer-publisher");
+        // addPublisher(new GaugePublisher(this.meterRegistry), "gauge-publisher");
+        // addPublisher(new TimeGaugePublisher(this.meterRegistry), "time-gauge-publisher");
+        // addPublisher(new CounterPublisher(this.meterRegistry), "counter-publisher");
+        // addPublisher(new DistributionSummaryPublisher(this.meterRegistry), "ds-publisher");
+        // addPublisher(new LongTaskTimerPublisher(this.meterRegistry), "ltt-publisher");
+        // addPublisher(new FunctionCounterPublisher(this.meterRegistry), "function-counter-publisher");
+        // addPublisher(new FunctionTimerPublisher(this.meterRegistry), "function-timer-publisher");
     }
 
 
@@ -48,9 +48,7 @@ public class MetricsPublisher implements Runnable {
 
 
     private void startWorkers() {
-        for (Thread t : this.workers) {
-            t.start();
-        }
+        this.workers.forEach(Thread::start);
     }
 
 
@@ -62,8 +60,6 @@ public class MetricsPublisher implements Runnable {
 
 
     private void stopWorkers() {
-        for (Thread t : this.workers) {
-            t.interrupt();
-        }
+        this.workers.forEach(Thread::interrupt);
     }
 }

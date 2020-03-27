@@ -118,8 +118,14 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
     }
 
 
+    // Generic case: unexpected meter type.
     private void publishMeter(Meter meter) {
+        // The generic Meter do not cache a logger and tags itself, so we have to rely on generic methods.
+        Logger logger = this.getMeterLogger(meter.getId());
+        Marker tags = this.getTags(meter.getId());
+        StructuredArgument snapshot = new JsonMeterSnapshot(meter);
 
+        logger.info(tags, null, snapshot);
     }
 
 

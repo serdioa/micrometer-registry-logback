@@ -12,6 +12,7 @@ import de.serdioa.micrometer.logging.base.LoggingTimer;
 import java.util.Objects;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
 
@@ -78,95 +79,56 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     private void publishGauge(Gauge gauge) {
-        LoggingMeter loggingMeter = (LoggingMeter) gauge;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonGaugeSnapshot(gauge);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingGauge) gauge, JsonGaugeSnapshot::new);
     }
 
 
     private void publishCounter(Counter counter) {
-        LoggingMeter loggingMeter = (LoggingMeter) counter;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonCounterSnapshot(counter);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingCounter) counter, JsonCounterSnapshot::new);
     }
 
 
     private void publishTimer(Timer timer) {
-        LoggingMeter loggingMeter = (LoggingMeter) timer;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonTimerSnapshot(timer);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingTimer) timer, JsonTimerSnapshot::new);
     }
 
 
     private void publishDistributionSummary(DistributionSummary summary) {
-        LoggingMeter loggingMeter = (LoggingMeter) summary;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonDistributionSummarySnapshot(summary);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingDistributionSummary) summary, JsonDistributionSummarySnapshot::new);
     }
 
 
     private void publishLongTaskTimer(LongTaskTimer longTaskTimer) {
-        LoggingMeter loggingMeter = (LoggingMeter) longTaskTimer;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonLongTaskTimerSnapshot(longTaskTimer);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingLongTaskTimer) longTaskTimer, JsonLongTaskTimerSnapshot::new);
     }
 
 
     private void publishTimeGauge(TimeGauge timeGauge) {
-        LoggingMeter loggingMeter = (LoggingMeter) timeGauge;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonTimeGaugeSnapshot(timeGauge);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingTimeGauge) timeGauge, JsonTimeGaugeSnapshot::new);
     }
 
 
     private void publishFunctionCounter(FunctionCounter functionCounter) {
-        LoggingMeter loggingMeter = (LoggingMeter) functionCounter;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonFunctionCounterSnapshot(functionCounter);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingFunctionCounter) functionCounter, JsonFunctionCounterSnapshot::new);
     }
 
 
     private void publishFunctionTimer(FunctionTimer functionTimer) {
-        LoggingMeter loggingMeter = (LoggingMeter) functionTimer;
-
-        Logger logger = loggingMeter.getLogger();
-        Marker tags = loggingMeter.getTags();
-        StructuredArgument snapshot = new JsonFunctionTimerSnapshot(functionTimer);
-
-        logger.info(tags, null, snapshot);
+        publishMeter((LoggingFunctionTimer) functionTimer, JsonFunctionTimerSnapshot::new);
     }
 
 
     private void publishMeter(Meter meter) {
 
+    }
+
+
+    private <T extends LoggingMeter> void publishMeter(T meter, Function<T, StructuredArgument> snapshotBuilder) {
+        Logger logger = meter.getLogger();
+        Marker tags = meter.getTags();
+        StructuredArgument snapshot = snapshotBuilder.apply(meter);
+
+        logger.info(tags, null, snapshot);
     }
 
 

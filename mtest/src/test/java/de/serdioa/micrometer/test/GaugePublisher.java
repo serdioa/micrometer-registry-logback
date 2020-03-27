@@ -1,4 +1,4 @@
-package de.serdioa.mtest;
+package de.serdioa.micrometer.test;
 
 import java.util.Objects;
 import java.util.Random;

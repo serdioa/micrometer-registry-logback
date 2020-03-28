@@ -15,5 +15,6 @@
     <modules>
         <module>mtest</module>
         <module>mtest-jmh</module>
+        <module>test-springboot</module>
     </modules>    
 </project>

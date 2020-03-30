@@ -16,7 +16,6 @@ public class Main {
     private final MetricsConsumer consumer;
 
     private final Thread publisherThread;
-    private final Thread consumerThread;
 
     private final MeterRegistry meterRegistry;
 
@@ -67,10 +66,9 @@ public class Main {
         this.meterRegistry = compositeRegistry;
 
         this.publisher = new MetricsPublisher(this.meterRegistry);
-        this.consumer = new MetricsConsumer(this.meterRegistry, false);
+        this.consumer = new MetricsConsumer(this.meterRegistry);
 
         this.publisherThread = new Thread(this.publisher);
-        this.consumerThread = new Thread(this.consumer);
     }
 
 
@@ -78,7 +76,7 @@ public class Main {
         System.out.println("Starting threads...");
 
         this.publisherThread.start();
-        this.consumerThread.start();
+        this.consumer.start();
 
         System.out.println("Threads has been started");
     }
@@ -88,10 +86,9 @@ public class Main {
         System.out.println("Stopping threads...");
 
         this.publisherThread.interrupt();
-        this.consumerThread.interrupt();
-
         this.publisherThread.join();
-        this.consumerThread.join();
+
+        this.consumer.stop();
 
         System.out.println("Threads has been stopped");
 

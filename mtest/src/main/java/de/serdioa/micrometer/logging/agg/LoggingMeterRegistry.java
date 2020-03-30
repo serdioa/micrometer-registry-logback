@@ -49,7 +49,12 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     public LoggingMeterRegistry(LoggingRegistryConfig config) {
-        this(config, Clock.SYSTEM, new NamedThreadFactory("logging-metrics-publisher"));
+        this(config, Clock.SYSTEM);
+    }
+
+
+    public LoggingMeterRegistry(LoggingRegistryConfig config, Clock clock) {
+        this(config, clock, new NamedThreadFactory("logging-metrics-publisher"));
     }
 
 

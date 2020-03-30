@@ -6,9 +6,11 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 
 public class MetricsConsumer {
+
     private final MeterRegistry meterRegistry;
     private Thread thread;
     private final Object mutex = new Object();
+
 
     public MetricsConsumer(MeterRegistry meterRegistry) {
         this.meterRegistry = Objects.requireNonNull(meterRegistry);

@@ -1,5 +1,6 @@
 package de.serdioa.micrometer.test;
 
+
 import java.time.Duration;
 
 import de.serdioa.micrometer.logging.direct.DirectLoggingMeterRegistry;
@@ -12,14 +13,13 @@ import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 
 
 public class Main {
+
     private final MetricsPublisher publisher;
     private final MetricsConsumer consumer;
-
-    private final Thread publisherThread;
-
     private final MeterRegistry meterRegistry;
 
-    public static void main(String [] args) throws Exception {
+
+    public static void main(String[] args) throws Exception {
         final Main main = new Main();
         main.start();
 
@@ -27,6 +27,7 @@ public class Main {
 
         main.stop();
     }
+
 
     private Main() {
         final MeterRegistry simpleMeterRegistry = new SimpleMeterRegistry();
@@ -37,19 +38,21 @@ public class Main {
                 return Duration.ofSeconds(10);
             }
 
+
             @Override
             public String get(String key) {
                 return null;
             }
         };
-        final DirectLoggingMeterRegistry directLoggingMeterRegistry =
-                new DirectLoggingMeterRegistry(directLoggingRegistryConfig);
+        final DirectLoggingMeterRegistry directLoggingMeterRegistry
+                = new DirectLoggingMeterRegistry(directLoggingRegistryConfig);
 
         final LoggingRegistryConfig loggingRegistryConfig = new LoggingRegistryConfig() {
             @Override
             public Duration step() {
                 return Duration.ofSeconds(10);
             }
+
 
             @Override
             public String get(String key) {
@@ -58,39 +61,45 @@ public class Main {
         };
         final LoggingMeterRegistry loggingMeterRegistry = new LoggingMeterRegistry(loggingRegistryConfig);
 
-
         final CompositeMeterRegistry compositeRegistry = new CompositeMeterRegistry();
         compositeRegistry.add(simpleMeterRegistry);
         compositeRegistry.add(loggingMeterRegistry);
 
         this.meterRegistry = compositeRegistry;
 
-        this.publisher = new MetricsPublisher(this.meterRegistry);
-        this.consumer = new MetricsConsumer(this.meterRegistry);
+        CompositeMetricsPublisher compositePublisher = new CompositeMetricsPublisher();
+        // compositePublisher.add(new CounterPublisher(meterRegistry));
+        // compositePublisher.add(new DistributionSummaryPublisher(meterRegistry));
+        // compositePublisher.add(new FunctionCounterPublisher(meterRegistry));
+        // compositePublisher.add(new FunctionTimerPublisher(meterRegistry));
+        // compositePublisher.add(new JvmMetricsPublisher(meterRegistry));
+        // compositePublisher.add(new GaugePublisher(meterRegistry));
+        // compositePublisher.add(new LongTaskTimerPublisher(meterRegistry));
+        // compositePublisher.add(new TimeGaugePublisher(meterRegistry));
+        compositePublisher.add(new TimerPublisher(meterRegistry));
+        this.publisher = compositePublisher;
 
-        this.publisherThread = new Thread(this.publisher);
+        this.consumer = new MetricsConsumer(simpleMeterRegistry);
     }
 
 
     private void start() {
-        System.out.println("Starting threads...");
+        System.out.println("Starting workers...");
 
-        this.publisherThread.start();
+        this.publisher.start();
         this.consumer.start();
 
-        System.out.println("Threads has been started");
+        System.out.println("Workers has been started");
     }
 
 
     private void stop() throws InterruptedException {
-        System.out.println("Stopping threads...");
+        System.out.println("Stopping workers...");
 
-        this.publisherThread.interrupt();
-        this.publisherThread.join();
-
+        this.publisher.stop();
         this.consumer.stop();
 
-        System.out.println("Threads has been stopped");
+        System.out.println("Workers has been stopped");
 
         this.meterRegistry.close();
         System.out.println("Meter registry has been closed");

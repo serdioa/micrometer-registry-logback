@@ -30,7 +30,7 @@ public class DirectLoggingMeterRegistry extends AbstractLoggingMeterRegistry {
     }
 
 
-    private DirectLoggingMeterRegistry(DirectLoggingRegistryConfig config, Clock clock) {
+    public DirectLoggingMeterRegistry(DirectLoggingRegistryConfig config, Clock clock) {
         super(config, clock);
         this.config = Objects.requireNonNull(config);
     }

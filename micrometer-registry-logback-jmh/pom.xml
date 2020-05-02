@@ -4,16 +4,16 @@
 
     <parent>
         <groupId>de.serdioa</groupId>
-        <artifactId>mtest-parent</artifactId>
+        <artifactId>micrometer-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 
     <groupId>de.serdioa</groupId>
-    <artifactId>mtest-jmh</artifactId>
+    <artifactId>micrometer-registry-logback-jmh</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>JMH benchmark for micrometer</name>
+    <name>JMH benchmark for micrometer-registry-logback</name>
 
     <dependencies>
         <dependency>
@@ -51,7 +51,7 @@
         
         <dependency>
             <groupId>de.serdioa</groupId>
-            <artifactId>mtest</artifactId>
+            <artifactId>micrometer-registry-logback</artifactId>
             <version>1.0-SNAPSHOT</version>            
         </dependency>
         

@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>de.serdioa</groupId>
-        <artifactId>mtest-parent</artifactId>
+        <artifactId>micrometer-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
 

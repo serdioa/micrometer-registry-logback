@@ -1,5 +1,7 @@
 package de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.agg;
 
+
+import de.serdioa.boot.actuate.autoconfigure.metrics.filter.FilterProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.properties.StepRegistryProperties;
@@ -16,4 +18,7 @@ public class LoggingProperties extends StepRegistryProperties {
     @Getter
     @Setter
     private boolean logInactive = true;
+
+    @Getter
+    private final FilterProperties filter = new FilterProperties();
 }

@@ -1,10 +1,12 @@
 package de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.direct;
 
+import de.serdioa.boot.actuate.autoconfigure.metrics.filter.FilterMeterRegistryCustomizer;
 import de.serdioa.micrometer.logging.direct.DirectLoggingMeterRegistry;
 import de.serdioa.micrometer.logging.direct.DirectLoggingRegistryConfig;
 
 import io.micrometer.core.instrument.Clock;
 import org.springframework.boot.actuate.autoconfigure.metrics.CompositeMeterRegistryAutoConfiguration;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.boot.actuate.autoconfigure.metrics.MetricsAutoConfiguration;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.simple.SimpleMetricsExportAutoConfiguration;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -47,5 +49,11 @@ public class DirectLoggingMetricsExportAutoConfiguration {
     @ConditionalOnMissingBean
     public DirectLoggingMeterRegistry directLoggingMeterRegistry(DirectLoggingRegistryConfig registryConfig, Clock clock) {
         return new DirectLoggingMeterRegistry(registryConfig, clock);
+    }
+
+
+    @Bean
+    public MeterRegistryCustomizer<DirectLoggingMeterRegistry> directLoggingFilterMeterRegistryCustomizer() {
+        return new FilterMeterRegistryCustomizer<>(this.properties.getFilter());
     }
 }

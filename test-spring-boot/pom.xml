@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>de.serdioa</groupId>
-    <artifactId>test-springboot</artifactId>
+    <artifactId>test-spring-boot</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 

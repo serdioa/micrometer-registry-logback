@@ -10,9 +10,8 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Dspring.config.location=file:src/config/test-springboot.properties -classpath %classpath de.serdioa.micrometer.spring.test.Application</exec.args>
+                <exec.args>-Dspring.config.location=file:src/config/test-spring-boot.properties -classpath %classpath de.serdioa.micrometer.spring.test.Application</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/home/serdioa/Development/java/micrometer-test/test-springboot</exec.workingdir>
             </properties>
         </action>
         <action>
@@ -25,10 +24,9 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -Dspring.config.location=file:src/config/test-springboot.properties -classpath %classpath de.serdioa.micrometer.spring.test.Application</exec.args>
+                <exec.args>-agentlib:jdwp=transport=dt_socket,server=n,address=${jpda.address} -Dspring.config.location=file:src/config/test-spring-boot.properties -classpath %classpath de.serdioa.micrometer.spring.test.Application</exec.args>
                 <exec.executable>java</exec.executable>
                 <jpda.listen>true</jpda.listen>
-                <exec.workingdir>/home/serdioa/Development/java/micrometer-test/test-springboot</exec.workingdir>
             </properties>
         </action>
         <action>
@@ -41,9 +39,8 @@
                 <goal>org.codehaus.mojo:exec-maven-plugin:1.5.0:exec</goal>
             </goals>
             <properties>
-                <exec.args>-Dspring.config.location=file:src/config/test-springboot.properties -classpath %classpath de.serdioa.micrometer.spring.test.Application</exec.args>
+                <exec.args>-Dspring.config.location=file:src/config/test-spring-boot.properties -classpath %classpath de.serdioa.micrometer.spring.test.Application</exec.args>
                 <exec.executable>java</exec.executable>
-                <exec.workingdir>/home/serdioa/Development/java/micrometer-test/test-springboot</exec.workingdir>
             </properties>
         </action>
     </actions>

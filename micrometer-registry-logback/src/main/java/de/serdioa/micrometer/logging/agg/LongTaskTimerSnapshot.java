@@ -1,10 +1,9 @@
 package de.serdioa.micrometer.logging.agg;
 
-import de.serdioa.micrometer.logging.base.ExtendedLongTaskTimer;
-
 import java.util.concurrent.TimeUnit;
 
 import io.micrometer.core.instrument.LongTaskTimer;
+import io.micrometer.core.instrument.distribution.HistogramSnapshot;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -19,17 +18,12 @@ import lombok.ToString;
     protected final int activeTasks;
 
     @Getter
-    protected final double duration;
+    protected final HistogramSnapshot histogramSnapshot;
 
 
     public LongTaskTimerSnapshot(LongTaskTimer longTaskTimer) {
-        if (longTaskTimer instanceof ExtendedLongTaskTimer) {
-            this.baseTimeUnit = ((ExtendedLongTaskTimer) longTaskTimer).baseTimeUnit();
-        } else {
-            this.baseTimeUnit = TimeUnit.NANOSECONDS;
-        }
-
+        this.baseTimeUnit = longTaskTimer.baseTimeUnit();
         this.activeTasks = longTaskTimer.activeTasks();
-        this.duration = longTaskTimer.duration(this.baseTimeUnit);
+        this.histogramSnapshot = longTaskTimer.takeSnapshot();
     }
 }

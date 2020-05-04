@@ -74,10 +74,11 @@ public class DirectLoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     @Override
-    protected LongTaskTimer newLongTaskTimer(Meter.Id id) {
+    protected LongTaskTimer newLongTaskTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig) {
         Logger logger = this.getMeterLogger(id);
         Marker tags = this.getTags(id);
 
-        return new DirectLoggingLongTaskTimer(id, this.clock, logger, tags);
+        return new DirectLoggingLongTaskTimer(id, this.clock, this.getBaseTimeUnit(), distributionStatisticConfig,
+                false, logger, tags);
     }
 }

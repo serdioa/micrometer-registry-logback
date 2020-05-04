@@ -183,11 +183,12 @@ public class LoggingMeterRegistry extends AbstractLoggingMeterRegistry {
 
 
     @Override
-    protected LongTaskTimer newLongTaskTimer(Meter.Id id) {
+    protected LongTaskTimer newLongTaskTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig) {
         Logger logger = getMeterLogger(id);
         Marker tags = getTags(id);
 
-        return new LoggingLongTaskTimer(id, this.clock, this.getBaseTimeUnit(), logger, tags);
+        return new LoggingLongTaskTimer(id, this.clock, this.getBaseTimeUnit(), distributionStatisticConfig, true,
+                logger, tags);
     }
 
 

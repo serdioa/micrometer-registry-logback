@@ -1,5 +1,6 @@
 package de.serdioa.micrometer.test;
 
+import java.time.Duration;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,6 +21,10 @@ public class LongTaskTimerPublisher extends AbstractMetricsPublisher {
         super(registry);
 
         this.timer = LongTaskTimer.builder("publisher.longTaskTimer")
+                .publishPercentiles(0.5, 0.75, 0.9, 0.95)
+                .publishPercentileHistogram()
+                .minimumExpectedValue(Duration.ofMillis(10))
+                .maximumExpectedValue(Duration.ofMillis(150))
                 .tags("c.\n1", "v.\n1", "c.2", "v.2")
                 .register(this.registry);
 

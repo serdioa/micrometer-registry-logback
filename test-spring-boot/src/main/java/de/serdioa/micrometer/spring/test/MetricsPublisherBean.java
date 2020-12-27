@@ -2,7 +2,11 @@ package de.serdioa.micrometer.spring.test;
 
 import de.serdioa.micrometer.test.CompositeMetricsPublisher;
 import de.serdioa.micrometer.test.CounterPublisher;
+import de.serdioa.micrometer.test.DistributionSummaryPublisher;
+import de.serdioa.micrometer.test.FunctionCounterPublisher;
+import de.serdioa.micrometer.test.FunctionTimerPublisher;
 import de.serdioa.micrometer.test.GaugePublisher;
+import de.serdioa.micrometer.test.LongTaskTimerPublisher;
 import de.serdioa.micrometer.test.TimeGaugePublisher;
 import de.serdioa.micrometer.test.TimerPublisher;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -26,14 +30,15 @@ public class MetricsPublisherBean {
         this.publisher = new CompositeMetricsPublisher();
 
         this.publisher.add(new CounterPublisher(this.registry));
-//        this.publisher.add(new DistributionSummaryPublisher(this.registry));
-//        this.publisher.add(new FunctionCounterPublisher(this.registry));
-//        this.publisher.add(new FunctionTimerPublisher(this.registry));
-//        this.publisher.add(new JvmMetricsPublisher(this.registry));
+        this.publisher.add(new DistributionSummaryPublisher(this.registry));
+        this.publisher.add(new FunctionCounterPublisher(this.registry));
+        this.publisher.add(new FunctionTimerPublisher(this.registry));
         this.publisher.add(new GaugePublisher(this.registry));
-//        this.publisher.add(new LongTaskTimerPublisher(this.registry));
+        this.publisher.add(new LongTaskTimerPublisher(this.registry));
         this.publisher.add(new TimeGaugePublisher(this.registry));
         this.publisher.add(new TimerPublisher(this.registry));
+        
+        // this.publisher.add(new JvmMetricsPublisher(this.registry));
 
         this.publisher.start();
     }

@@ -1,4 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
     de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.agg.LoggingMetricsExportAutoConfiguration, \
-    de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.direct.DirectLoggingMetricsExportAutoConfiguration
+    de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.direct.DirectLoggingMetricsExportAutoConfiguration, \
+    de.serdioa.boot.actuate.autoconfigure.metrics.export.pull.console.ConsolePullMetricsExportAutoConfiguration
 

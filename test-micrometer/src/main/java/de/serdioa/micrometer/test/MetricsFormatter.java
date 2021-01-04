@@ -3,6 +3,7 @@ package de.serdioa.micrometer.test;
 import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.util.StringEscapeUtils;
 
 
@@ -33,11 +34,23 @@ public class MetricsFormatter {
                 .append(escapedMeterId)
                 .append(":\n");
 
-        for (Measurement measurement : meter.measure()) {
-            sb.append("        ")
-                    .append(format(measurement))
-                    .append("\n");
+        if (meter instanceof Timer) {
+            formatTimer((Timer) meter, sb);
+        } else {
+            for (Measurement measurement : meter.measure()) {
+                sb.append("        ")
+                        .append(format(measurement))
+                        .append("\n");
+            }
         }
+    }
+
+
+    public static void formatTimer(Timer timer, StringBuilder sb) {
+        sb.append("        ").append("count=").append(timer.count()).append("\n");
+        sb.append("        ").append("total=").append(timer.totalTime(timer.baseTimeUnit())).append("\n");
+        sb.append("        ").append("mean=").append(timer.mean(timer.baseTimeUnit())).append("\n");
+        sb.append("        ").append("max=").append(timer.max(timer.baseTimeUnit())).append("\n");
     }
 
 

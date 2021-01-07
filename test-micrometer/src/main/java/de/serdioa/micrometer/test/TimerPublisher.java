@@ -25,7 +25,7 @@ public class TimerPublisher extends AbstractMetricsPublisher {
 
     @Override
     protected void publish() throws InterruptedException {
-        for (int i = 10000; i > 0; --i) {
+        for (int i = 1000; i > 0; i -= 10) {
             this.record(i);
             Thread.sleep(1000);
         }

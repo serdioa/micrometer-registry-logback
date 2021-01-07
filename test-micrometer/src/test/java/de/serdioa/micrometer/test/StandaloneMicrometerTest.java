@@ -25,9 +25,9 @@ public class StandaloneMicrometerTest {
             }
         };
 
-        double [] sla = new double[11];
-        for (int i = 0; i < 11; ++i) {
-            sla[i] = TimeUnit.MILLISECONDS.toNanos(9900 + i * 10);
+        double [] sla = new double[10];
+        for (int i = 0; i < sla.length; ++i) {
+            sla[i] = TimeUnit.MILLISECONDS.toNanos(100 + i * 100);
         }
         
         SimpleMeterRegistry meterRegistry = new SimpleMeterRegistry(registryConfig, Clock.SYSTEM);
@@ -38,7 +38,7 @@ public class StandaloneMicrometerTest {
                         .percentiles(0.5, 0.75, 0.9, 0.95, 1.0)
                         .serviceLevelObjectives(sla)
                         .expiry(Duration.ofSeconds(10))
-                        .bufferLength(2)
+                        .bufferLength(10)
                         .build().merge(config);
             }
         };

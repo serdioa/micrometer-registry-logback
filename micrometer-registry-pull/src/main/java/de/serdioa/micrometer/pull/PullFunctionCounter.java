@@ -10,8 +10,10 @@ import io.micrometer.core.instrument.step.StepFunctionCounter;
 
 public class PullFunctionCounter<T> extends StepFunctionCounter<T> implements PullMeter {
 
+    public static final String COUNT = "count";
+
     private final List<PullMeasurement> measurements = Collections.singletonList(
-            new PullMeasurement("count", this::count));
+            new PullMeasurement(COUNT, this::count));
 
 
     public PullFunctionCounter(Id id, Clock clock, long stepMillis, T obj, ToDoubleFunction<T> f) {

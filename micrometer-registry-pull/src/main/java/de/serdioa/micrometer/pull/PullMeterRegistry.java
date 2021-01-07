@@ -84,6 +84,6 @@ public abstract class PullMeterRegistry extends MeterRegistry {
 
     @Override
     protected <T> FunctionCounter newFunctionCounter(Meter.Id id, T obj, ToDoubleFunction<T> countFunction) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new PullFunctionCounter<>(id, this.clock, this.pullConfig.pollingFrequency().toMillis(), obj, countFunction);
     }
 }

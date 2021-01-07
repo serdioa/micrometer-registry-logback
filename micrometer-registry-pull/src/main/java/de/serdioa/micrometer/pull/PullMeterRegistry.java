@@ -54,7 +54,7 @@ public abstract class PullMeterRegistry extends MeterRegistry {
 
     @Override
     protected Counter newCounter(Meter.Id id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new PullCounter(id, this.clock, this.pullConfig.pollingFrequency().toMillis());
     }
 
 

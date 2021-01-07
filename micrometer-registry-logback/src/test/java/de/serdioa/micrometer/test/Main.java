@@ -79,7 +79,7 @@ public class Main {
         compositePublisher.add(new TimerPublisher(meterRegistry));
         this.publisher = compositePublisher;
 
-        this.consumer = new MetricsConsumer(simpleMeterRegistry);
+        this.consumer = new MetricsConsumer(simpleMeterRegistry, 10000);
     }
 
 

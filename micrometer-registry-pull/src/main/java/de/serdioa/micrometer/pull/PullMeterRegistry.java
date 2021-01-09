@@ -13,9 +13,11 @@ import io.micrometer.core.instrument.Gauge;
 import io.micrometer.core.instrument.Measurement;
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.Timer;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
+import io.micrometer.core.lang.Nullable;
 
 
 public abstract class PullMeterRegistry extends MeterRegistry {
@@ -49,6 +51,13 @@ public abstract class PullMeterRegistry extends MeterRegistry {
     @Override
     protected <T> Gauge newGauge(Meter.Id id, T obj, ToDoubleFunction<T> valueFunction) {
         return new PullGauge<>(id, obj, valueFunction);
+    }
+
+
+    @Override
+    protected <T> TimeGauge newTimeGauge(Meter.Id id, @Nullable T obj, TimeUnit valueFunctionUnit,
+            ToDoubleFunction<T> valueFunction) {
+        return new PullTimeGauge<>(id, obj, valueFunctionUnit, valueFunction, this.getBaseTimeUnit());
     }
 
 

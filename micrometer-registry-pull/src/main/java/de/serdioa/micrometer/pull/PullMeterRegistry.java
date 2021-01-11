@@ -75,7 +75,8 @@ public abstract class PullMeterRegistry extends MeterRegistry {
 
     @Override
     protected DistributionSummary newDistributionSummary(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, double scale) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new PullDistributionSummary(id, this.clock, distributionStatisticConfig, scale, this.pullConfig
+                .pollingFrequency().toMillis(), false);
     }
 
 

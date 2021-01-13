@@ -87,8 +87,10 @@ public abstract class PullMeterRegistry extends MeterRegistry {
 
 
     @Override
-    protected <T> FunctionTimer newFunctionTimer(Meter.Id id, T obj, ToLongFunction<T> countFunction, ToDoubleFunction<T> totalTimeFunction, TimeUnit totalTimeFunctionUnit) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    protected <T> FunctionTimer newFunctionTimer(Meter.Id id, T obj, ToLongFunction<T> countFunction,
+            ToDoubleFunction<T> totalTimeFunction, TimeUnit totalTimeFunctionUnit) {
+        return new PullFunctionTimer<>(id, this.clock, this.pullConfig.pollingFrequency().toMillis(), obj, countFunction,
+                totalTimeFunction, totalTimeFunctionUnit, this.getBaseTimeUnit());
     }
 
 

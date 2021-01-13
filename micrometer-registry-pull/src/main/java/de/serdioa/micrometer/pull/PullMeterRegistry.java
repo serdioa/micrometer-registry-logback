@@ -69,7 +69,8 @@ public abstract class PullMeterRegistry extends MeterRegistry {
 
     @Override
     protected Timer newTimer(Meter.Id id, DistributionStatisticConfig distributionStatisticConfig, PauseDetector pauseDetector) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new PullTimer(id, this.clock, distributionStatisticConfig, pauseDetector, this.getBaseTimeUnit(),
+                this.pullConfig.pollingFrequency().toMillis(), false);
     }
 
 

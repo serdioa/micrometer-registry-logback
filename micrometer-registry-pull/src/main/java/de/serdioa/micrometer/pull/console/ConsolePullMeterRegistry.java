@@ -28,7 +28,7 @@ public class ConsolePullMeterRegistry extends PullMeterRegistry {
 
 
     public ConsolePullMeterRegistry(ConsolePullConfig config, Clock clock) {
-        this(config, HierarchicalNameMapper.DEFAULT, NamingConvention.dot, clock);
+        this(config, ConsoleNameMapper.DEFAULT, NamingConvention.dot, clock);
     }
 
 

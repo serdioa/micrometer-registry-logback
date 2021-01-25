@@ -1,5 +1,6 @@
 package de.serdioa.micrometer.pull;
 
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
@@ -16,6 +17,7 @@ import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.TimeGauge;
 import io.micrometer.core.instrument.Timer;
+import io.micrometer.core.instrument.config.NamingConvention;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 import io.micrometer.core.instrument.distribution.pause.PauseDetector;
 import io.micrometer.core.lang.Nullable;
@@ -27,10 +29,18 @@ public abstract class PullMeterRegistry extends MeterRegistry {
 
 
     protected PullMeterRegistry(PullConfig config, Clock clock) {
+        this(config, NamingConvention.dot, clock);
+    }
+
+
+    protected PullMeterRegistry(PullConfig config, NamingConvention namingConvention, Clock clock) {
         super(clock);
 
+        Objects.requireNonNull(config, "config is required");
         config.requireValid();
         this.pullConfig = config;
+
+        this.config().namingConvention(Objects.requireNonNull(namingConvention, "namingConvention is required"));
     }
 
 

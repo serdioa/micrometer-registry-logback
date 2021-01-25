@@ -1,5 +1,6 @@
 package de.serdioa.micrometer.pull.console;
 
+import java.util.Objects;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -9,6 +10,8 @@ import de.serdioa.micrometer.pull.PullMeter;
 import de.serdioa.micrometer.pull.PullMeterRegistry;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.Meter;
+import io.micrometer.core.instrument.config.NamingConvention;
+import io.micrometer.core.instrument.util.HierarchicalNameMapper;
 
 
 /**
@@ -17,13 +20,23 @@ import io.micrometer.core.instrument.Meter;
  */
 public class ConsolePullMeterRegistry extends PullMeterRegistry {
 
+    private final HierarchicalNameMapper nameMapper;
+
     // @GuardedBy(this.executorLock)
     private ScheduledExecutorService executor;
     private final Object executorLock = new Object();
 
 
     public ConsolePullMeterRegistry(ConsolePullConfig config, Clock clock) {
-        super(config, clock);
+        this(config, HierarchicalNameMapper.DEFAULT, NamingConvention.dot, clock);
+    }
+
+
+    public ConsolePullMeterRegistry(ConsolePullConfig config, HierarchicalNameMapper nameMapper,
+            NamingConvention namingConvention, Clock clock) {
+        super(config, namingConvention, clock);
+
+        this.nameMapper = Objects.requireNonNull(nameMapper, "nameMapper is required");
 
         this.startExecutor();
     }
@@ -66,8 +79,10 @@ public class ConsolePullMeterRegistry extends PullMeterRegistry {
     private void publishMeter(Meter meter) {
         Meter.Id id = meter.getId();
         PullMeter pullMeter = (PullMeter) meter;
+        String pullMeterName = this.nameMapper.toHierarchicalName(id, this.config().namingConvention());
+
         for (PullMeasurement m : pullMeter.getPullMeasurements()) {
-            System.out.println(id.getName() + ": " + m);
+            System.out.println(pullMeterName + ": " + m);
         }
     }
 }

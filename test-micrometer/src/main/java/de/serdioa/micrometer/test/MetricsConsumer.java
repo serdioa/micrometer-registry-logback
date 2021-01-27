@@ -7,12 +7,19 @@ import io.micrometer.core.instrument.MeterRegistry;
 
 public class MetricsConsumer {
 
+    private final long step;
     private final MeterRegistry meterRegistry;
+
     private Thread thread;
     private final Object mutex = new Object();
 
 
-    public MetricsConsumer(MeterRegistry meterRegistry) {
+    public MetricsConsumer(MeterRegistry meterRegistry, long step) {
+        if (step <= 0) {
+            throw new IllegalArgumentException("step (" + step + ") <= 0");
+        }
+
+        this.step = step;
         this.meterRegistry = Objects.requireNonNull(meterRegistry);
     }
 
@@ -53,7 +60,7 @@ public class MetricsConsumer {
             while (!Thread.interrupted()) {
                 System.out.println(MetricsFormatter.format(this.meterRegistry));
 
-                Thread.sleep(1000);
+                Thread.sleep(this.step);
             }
         } catch (InterruptedException ex) {
             System.out.println("Consumer has been interrupted");

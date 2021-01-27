@@ -16,10 +16,6 @@ public class DistributionSummaryPublisher extends AbstractMetricsPublisher {
         super(registry);
 
         this.ds = DistributionSummary.builder("publisher.ds")
-                .publishPercentiles(0.5, 0.75, 0.9, 0.95)
-                .publishPercentileHistogram()
-                .minimumExpectedValue(1L)
-                .maximumExpectedValue(50L)
                 .tags("c.\n1", "v.\n1", "c.2", "v.2")
                 .register(this.registry);
     }

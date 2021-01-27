@@ -18,10 +18,6 @@ public class TimerPublisher extends AbstractMetricsPublisher {
         super(registry);
 
         this.timer = Timer.builder("publisher.timer")
-                .publishPercentiles(0.5, 0.75, 0.9, 0.95)
-                .publishPercentileHistogram()
-                .minimumExpectedValue(Duration.ofMillis(50))
-                .maximumExpectedValue(Duration.ofMillis(150))
                 .tags("t.\n1", "v.\n1", "t.2", "v.2")
                 .register(this.registry);
     }
@@ -29,12 +25,16 @@ public class TimerPublisher extends AbstractMetricsPublisher {
 
     @Override
     protected void publish() throws InterruptedException {
-        final long startTs = System.nanoTime();
-        doWork();
-        final long endTs = System.nanoTime();
-        final long duration = endTs - startTs;
+        for (int i = 1000; i > 0; i -= 10) {
+            this.record(i);
+            Thread.sleep(1000);
+        }
+    }
 
-        this.timer.record(duration, TimeUnit.NANOSECONDS);
+
+    private void record(int millis) {
+        System.out.println("Recording: " + millis + " ms");
+        this.timer.record(millis, TimeUnit.MILLISECONDS);
     }
 
 

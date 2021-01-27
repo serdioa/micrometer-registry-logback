@@ -1,22 +1,20 @@
 package de.serdioa.micrometer.pull;
 
-import java.util.Collections;
-import java.util.List;
-
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.step.StepCounter;
 
 
 public class PullCounter extends StepCounter implements PullMeter {
 
-    public static final String COUNT = "count";
-
-    private final List<PullMeasurement> measurements = Collections.singletonList(
-            new PullMeasurement(COUNT, this::count));
+    private final Iterable<PullMeasurement> measurements;
 
 
     public PullCounter(Id id, Clock clock, long stepMillis) {
         super(id, clock, stepMillis);
+
+        this.measurements = PullMeterUtil.measurements(
+                PullMeasurement.of(id.getType(), PullMeasurement.Type.COUNT, this::count)
+        );
     }
 
 

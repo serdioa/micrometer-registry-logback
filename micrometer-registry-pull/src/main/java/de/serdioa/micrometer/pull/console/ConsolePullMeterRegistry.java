@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import de.serdioa.micrometer.pull.PullMeasurement;
+import de.serdioa.micrometer.pull.PullMeasurementNamingConvention;
 import de.serdioa.micrometer.pull.PullMeter;
 import de.serdioa.micrometer.pull.PullMeterRegistry;
 import io.micrometer.core.instrument.Clock;
@@ -28,13 +29,14 @@ public class ConsolePullMeterRegistry extends PullMeterRegistry {
 
 
     public ConsolePullMeterRegistry(ConsolePullConfig config, Clock clock) {
-        this(config, ConsoleNameMapper.DEFAULT, NamingConvention.dot, clock);
+        this(config, ConsoleNameMapper.DEFAULT, NamingConvention.dot, PullMeasurementNamingConvention.DEFAULT, clock);
     }
 
 
     public ConsolePullMeterRegistry(ConsolePullConfig config, HierarchicalNameMapper nameMapper,
-            NamingConvention namingConvention, Clock clock) {
-        super(config, namingConvention, clock);
+            NamingConvention namingConvention, PullMeasurementNamingConvention measurementNamingConvention,
+            Clock clock) {
+        super(config, namingConvention, measurementNamingConvention, clock);
 
         this.nameMapper = Objects.requireNonNull(nameMapper, "nameMapper is required");
 
@@ -82,7 +84,10 @@ public class ConsolePullMeterRegistry extends PullMeterRegistry {
         String pullMeterName = this.nameMapper.toHierarchicalName(id, this.config().namingConvention());
 
         for (PullMeasurement m : pullMeter.getPullMeasurements()) {
-            System.out.println(pullMeterName + ": " + m);
+            String measurementName = m.getConventionName(this.measurementNamingConvention);
+            Double value = m.getValue();
+
+            System.out.println(pullMeterName + ": " + measurementName + "=" + value);
         }
     }
 }

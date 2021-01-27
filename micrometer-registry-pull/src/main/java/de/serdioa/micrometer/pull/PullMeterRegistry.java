@@ -26,14 +26,16 @@ import io.micrometer.core.lang.Nullable;
 public abstract class PullMeterRegistry extends MeterRegistry {
 
     protected final PullConfig pullConfig;
+    protected final PullMeasurementNamingConvention measurementNamingConvention;
 
 
     protected PullMeterRegistry(PullConfig config, Clock clock) {
-        this(config, NamingConvention.dot, clock);
+        this(config, NamingConvention.dot, PullMeasurementNamingConvention.DEFAULT, clock);
     }
 
 
-    protected PullMeterRegistry(PullConfig config, NamingConvention namingConvention, Clock clock) {
+    protected PullMeterRegistry(PullConfig config, NamingConvention namingConvention,
+            PullMeasurementNamingConvention measurementNamingConvention, Clock clock) {
         super(clock);
 
         Objects.requireNonNull(config, "config is required");
@@ -41,6 +43,9 @@ public abstract class PullMeterRegistry extends MeterRegistry {
         this.pullConfig = config;
 
         this.config().namingConvention(Objects.requireNonNull(namingConvention, "namingConvention is required"));
+
+        this.measurementNamingConvention = Objects
+                .requireNonNull(measurementNamingConvention, "measurementNamingConvention is required");
     }
 
 

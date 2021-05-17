@@ -11,6 +11,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <micrometer.version>1.6.2</micrometer.version>
+        <lombok.version>1.18.20</lombok.version>
     </properties>
 
     <modules>
@@ -23,7 +24,7 @@
         <module>test-spring-boot</module>
         <module>test-micrometer</module>
     </modules>
-    
+
     <dependencyManagement>
         <dependencies>
             <dependency>
@@ -31,11 +32,18 @@
                 <artifactId>micrometer-core</artifactId>
                 <version>${micrometer.version}</version>
             </dependency>
-            
+
             <dependency>
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-elastic</artifactId>
                 <version>${micrometer.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -51,6 +59,24 @@
                         <ignoredUnusedDeclaredDependencies>
                             <ignoredUnusedDeclaredDependency>org.projectlombok:lombok</ignoredUnusedDeclaredDependency>
                         </ignoredUnusedDeclaredDependencies>
+                    </configuration>
+                </plugin>
+            
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                        <encoding>${project.build.sourceEncoding}</encoding>
+                        <annotationProcessorPaths>
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${lombok.version}</version>
+                            </path>
+                        </annotationProcessorPaths>
                     </configuration>
                 </plugin>
             </plugins>

@@ -11,6 +11,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <micrometer.version>1.6.2</micrometer.version>
+        <spring.version>5.3.7</spring.version>
         <lombok.version>1.18.20</lombok.version>
     </properties>
 
@@ -37,6 +38,12 @@
                 <groupId>io.micrometer</groupId>
                 <artifactId>micrometer-registry-elastic</artifactId>
                 <version>${micrometer.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.annotation</groupId>
+                <artifactId>javax.annotation-api</artifactId>
+                <version>1.3.2</version>
             </dependency>
 
             <dependency>

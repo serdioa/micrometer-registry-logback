@@ -9,4 +9,7 @@
 
     <context:annotation-config/>
     <context:component-scan base-package="de.serdioa.micrometer.spring.test"/>
+    
+    <bean id="micrometerConfiguration" class="de.serdioa.spring.metrics.MicrometerConfiguration" />
+    <bean id="loggingRegistryConfiguration" class="de.serdioa.spring.metrics.LoggingRegistryConfiguration" />
 </beans>

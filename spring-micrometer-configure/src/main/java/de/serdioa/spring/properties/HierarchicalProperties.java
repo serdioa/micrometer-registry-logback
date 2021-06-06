@@ -3,6 +3,7 @@ package de.serdioa.spring.properties;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 
 /**
@@ -40,6 +41,27 @@ public class HierarchicalProperties<T> {
 
     public HierarchicalProperties(Map<String, T> props) {
         this.props = new HashMap<>(props);
+    }
+
+
+    public HierarchicalProperties(Map<String, String> props, Function<String, T> parser) {
+        this.props = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : props.entrySet()) {
+            String key = entry.getKey();
+            String strValue = entry.getValue();
+
+            // Skip null values, since they are ignored by the getter (fallback to a paren property) anyway.
+            if (strValue != null) {
+                T value;
+                try {
+                   value = parser.apply(strValue);
+                } catch (Exception ex) {
+                    throw new IllegalArgumentException("Can not parse value '" + strValue + "'", ex);
+                }
+                this.props.put(key, value);
+            }
+        }
     }
 
 

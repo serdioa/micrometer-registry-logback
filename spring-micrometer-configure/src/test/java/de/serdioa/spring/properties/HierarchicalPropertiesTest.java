@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,5 +58,23 @@ public class HierarchicalPropertiesTest {
     @Test
     public void testGetFallback() {
         assertEquals(9, (int) this.props.get("nomatch", 9));
+    }
+
+
+    @Test
+    public void testParsingConstructor() {
+        Map<String, String> propsMap = new HashMap<>();
+
+        propsMap.put("foo", "1");
+        propsMap.put("bar", "2");
+        propsMap.put("foo.zip", "3");
+        propsMap.put("baz", null);
+
+        HierarchicalProperties<Integer> props = new HierarchicalProperties<>(propsMap, Integer::valueOf);
+
+        assertEquals(1, (int) props.get("foo").get());
+        assertEquals(2, (int) props.get("bar").get());
+        assertEquals(3, (int) props.get("foo.zip").get());
+        assertTrue(props.get("baz").isEmpty());
     }
 }

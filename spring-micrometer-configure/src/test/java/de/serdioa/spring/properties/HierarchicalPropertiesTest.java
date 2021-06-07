@@ -5,7 +5,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,33 +30,33 @@ public class HierarchicalPropertiesTest {
 
     @Test
     public void testGetExact() {
-        assertEquals(1, (int) this.props.get("foo").get());
-        assertEquals(2, (int) this.props.get("bar").get());
-        assertEquals(3, (int) this.props.get("foo.zip").get());
-        assertEquals(4, (int) this.props.get("foo.zap").get());
-        assertEquals(5, (int) this.props.get("foo.zip.bang").get());
+        assertEquals(1, (int) this.props.getHierarchical("foo").get());
+        assertEquals(2, (int) this.props.getHierarchical("bar").get());
+        assertEquals(3, (int) this.props.getHierarchical("foo.zip").get());
+        assertEquals(4, (int) this.props.getHierarchical("foo.zap").get());
+        assertEquals(5, (int) this.props.getHierarchical("foo.zip.bang").get());
     }
 
 
     @Test
     public void testGetPrefix() {
         // No exact match, using the prefix "foo.zip".
-        assertEquals(3, (int) this.props.get("foo.zip.nomatch").get());
+        assertEquals(3, (int) this.props.getHierarchical("foo.zip.nomatch").get());
 
         // No exact match, using the prefix "bar".
-        assertEquals(2, (int) this.props.get("bar.nomatch.nomatch.nomatch").get());
+        assertEquals(2, (int) this.props.getHierarchical("bar.nomatch.nomatch.nomatch").get());
     }
 
 
     @Test
     public void testGetNotFound() {
-        assertTrue(this.props.get("nomatch").isEmpty());
+        assertTrue(this.props.getHierarchical("nomatch").isEmpty());
     }
 
 
     @Test
     public void testGetFallback() {
-        assertEquals(9, (int) this.props.get("nomatch", 9));
+        assertEquals(9, (int) this.props.getHierarchical("nomatch", 9));
     }
 
 
@@ -72,9 +71,9 @@ public class HierarchicalPropertiesTest {
 
         HierarchicalProperties<Integer> props = new HierarchicalProperties<>(propsMap, Integer::valueOf);
 
-        assertEquals(1, (int) props.get("foo").get());
-        assertEquals(2, (int) props.get("bar").get());
-        assertEquals(3, (int) props.get("foo.zip").get());
-        assertTrue(props.get("baz").isEmpty());
+        assertEquals(1, (int) props.getHierarchical("foo").get());
+        assertEquals(2, (int) props.getHierarchical("bar").get());
+        assertEquals(3, (int) props.getHierarchical("foo.zip").get());
+        assertTrue(props.getHierarchical("baz").isEmpty());
     }
 }

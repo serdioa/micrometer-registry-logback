@@ -29,24 +29,19 @@ import java.util.function.Function;
  *
  * @param <T> the type of values in this properties.
  */
-public class HierarchicalProperties<T> {
-
-    private final Map<String, T> props;
-
+public class HierarchicalProperties<T> extends HashMap<String, T> {
 
     public HierarchicalProperties() {
-        this.props = new HashMap<>();
+        // Default super constructor initializes an empty map.
     }
 
 
     public HierarchicalProperties(Map<String, T> props) {
-        this.props = new HashMap<>(props);
+        super(props);
     }
 
 
-    public HierarchicalProperties(Map<String, String> props, Function<String, T> parser) {
-        this.props = new HashMap<>();
-
+    public HierarchicalProperties(Map<String, String> props, Function<String, T> transform) {
         for (Map.Entry<String, String> entry : props.entrySet()) {
             String key = entry.getKey();
             String strValue = entry.getValue();
@@ -55,19 +50,19 @@ public class HierarchicalProperties<T> {
             if (strValue != null) {
                 T value;
                 try {
-                   value = parser.apply(strValue);
+                    value = transform.apply(strValue);
                 } catch (Exception ex) {
                     throw new IllegalArgumentException("Can not parse value '" + strValue + "'", ex);
                 }
-                this.props.put(key, value);
+                super.put(key, value);
             }
         }
     }
 
 
-    public Optional<T> get(String key) {
+    public Optional<T> getHierarchical(String key) {
         while (true) {
-            T value = this.props.get(key);
+            T value = this.get(key);
             if (value != null) {
                 return Optional.of(value);
             }
@@ -84,7 +79,7 @@ public class HierarchicalProperties<T> {
     }
 
 
-    public T get(String key, T fallbackValue) {
-        return this.get(key).orElse(fallbackValue);
+    public T getHierarchical(String key, T fallbackValue) {
+        return this.getHierarchical(key).orElse(fallbackValue);
     }
 }

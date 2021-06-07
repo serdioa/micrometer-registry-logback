@@ -1,5 +1,6 @@
 package de.serdioa.spring.properties;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
@@ -25,8 +26,8 @@ public class StructuredPropertyService implements ApplicationContextAware {
     }
 
 
-    public <T> HierarchicalProperties<T> getHierarchicalProperties(String prefix, Function<String, T> parser) {
+    public <T> HierarchicalProperties<T> getProperties(String prefix, Function<String, T> transform) {
         Map<String, String> props = this.getProperties(prefix);
-        return new HierarchicalProperties<>(props, parser);
+        return new HierarchicalProperties<>(props, transform);
     }
 }

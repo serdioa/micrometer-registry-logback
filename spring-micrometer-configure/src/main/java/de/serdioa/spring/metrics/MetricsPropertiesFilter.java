@@ -3,12 +3,14 @@ package de.serdioa.spring.metrics;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import io.micrometer.core.instrument.Meter;
 import io.micrometer.core.instrument.Tag;
 import io.micrometer.core.instrument.config.MeterFilter;
 import io.micrometer.core.instrument.config.MeterFilterReply;
+import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 
 
 /**
@@ -54,5 +56,26 @@ public class MetricsPropertiesFilter implements MeterFilter {
     public Meter.Id map(Meter.Id id) {
         // Add common tags to the specified meter ID.
         return this.filter.map(id);
+    }
+
+
+    @Override
+    public DistributionStatisticConfig configure(Meter.Id id, DistributionStatisticConfig config) {
+        DistributionStatisticConfig.Builder configBuilder = DistributionStatisticConfig.builder();
+
+        String meterName = id.getName();
+
+        Optional<Boolean> percentilesHistogram = this.properties.getPercentilesHistogram().getHierarchical(meterName);
+        if (percentilesHistogram.isPresent()) {
+            configBuilder.percentilesHistogram(percentilesHistogram.get());
+        }
+
+        Optional<double[]> percentiles = this.properties.getPercentiles().getHierarchical(meterName);
+        if (percentiles.isPresent()) {
+            configBuilder.percentiles(percentiles.get());
+        }
+
+        // The distribution configuration we just build has a priority over defaults provided to this method.
+        return configBuilder.build().merge(config);
     }
 }

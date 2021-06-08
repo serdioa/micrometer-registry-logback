@@ -41,8 +41,26 @@ public class MicrometerConfiguration {
         Map<String, Boolean> enable = structuredPropertyService
                 .getProperties("management.metrics.enable", Boolean::valueOf);
         Map<String, String> tags = structuredPropertyService.getProperties("management.metrics.tags");
+        Map<String, Boolean> percentilesHistogram = structuredPropertyService.getProperties(
+                "management.metrics.distribution.percentiles-histogram", Boolean::valueOf);
+        Map<String, double[]> percentiles = structuredPropertyService.getProperties(
+                "management.metrics.distribution.percentiles", this::parseDoubleArray);
 
-        return new MetricsProperties(enable, tags);
+        return new MetricsProperties(enable, tags, percentilesHistogram, percentiles);
+    }
+
+
+    private double[] parseDoubleArray(String str) {
+        // Split by comma.
+        String[] items = str.split(",");
+
+        // Parse each item as a Double.
+        double[] result = new double[items.length];
+        for (int i = 0; i < items.length; ++i) {
+            result[i] = Double.parseDouble(items[i]);
+        }
+
+        return result;
     }
 
 

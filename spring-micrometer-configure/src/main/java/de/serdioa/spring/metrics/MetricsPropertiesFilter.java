@@ -75,6 +75,24 @@ public class MetricsPropertiesFilter implements MeterFilter {
             configBuilder.percentiles(percentiles.get());
         }
 
+        Optional<MeterValue> minimumExpectedValue =
+                this.properties.getMinimumExpectedValue().getHierarchical(meterName);
+        if (minimumExpectedValue.isPresent()) {
+            Long value = minimumExpectedValue.get().getValue(id.getType());
+            if (value != null) {
+                configBuilder.minimumExpectedValue(value.doubleValue());
+            }
+        }
+
+        Optional<MeterValue> maximumExpectedValue =
+                this.properties.getMaximumExpectedValue().getHierarchical(meterName);
+        if (maximumExpectedValue.isPresent()) {
+            Long value = maximumExpectedValue.get().getValue(id.getType());
+            if (value != null) {
+                configBuilder.maximumExpectedValue(value.doubleValue());
+            }
+        }
+
         // The distribution configuration we just build has a priority over defaults provided to this method.
         return configBuilder.build().merge(config);
     }

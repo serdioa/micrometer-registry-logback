@@ -45,8 +45,13 @@ public class MicrometerConfiguration {
                 "management.metrics.distribution.percentiles-histogram", Boolean::valueOf);
         Map<String, double[]> percentiles = structuredPropertyService.getProperties(
                 "management.metrics.distribution.percentiles", this::parseDoubleArray);
+        Map<String, MeterValue> minimumExpectedValue = structuredPropertyService.getProperties(
+                "management.metrics.distribution.minimum-expected-value", MeterValue::of);
+        Map<String, MeterValue> maximumExpectedValue = structuredPropertyService.getProperties(
+                "management.metrics.distribution.maximum-expected-value", MeterValue::of);
 
-        return new MetricsProperties(enable, tags, percentilesHistogram, percentiles);
+        return new MetricsProperties(enable, tags, percentilesHistogram, percentiles,
+                minimumExpectedValue, maximumExpectedValue);
     }
 
 

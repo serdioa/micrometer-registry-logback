@@ -49,9 +49,11 @@ public class MicrometerConfiguration {
                 "management.metrics.distribution.minimum-expected-value", MeterValue::of);
         Map<String, MeterValue> maximumExpectedValue = structuredPropertyService.getProperties(
                 "management.metrics.distribution.maximum-expected-value", MeterValue::of);
+        Map<String, MeterValue[]> sla = structuredPropertyService.getProperties(
+                "management.metrics.distribution.sla", this::parseMeterValueArray);
 
         return new MetricsProperties(enable, tags, percentilesHistogram, percentiles,
-                minimumExpectedValue, maximumExpectedValue);
+                minimumExpectedValue, maximumExpectedValue, sla);
     }
 
 
@@ -63,6 +65,20 @@ public class MicrometerConfiguration {
         double[] result = new double[items.length];
         for (int i = 0; i < items.length; ++i) {
             result[i] = Double.parseDouble(items[i]);
+        }
+
+        return result;
+    }
+
+
+    private MeterValue[] parseMeterValueArray(String str) {
+        // Split by comma.
+        String[] items = str.split(",");
+
+        // Parse each item as a MeterValue (i.e. either an integer/long or a Duration).
+        MeterValue[] result = new MeterValue[items.length];
+        for (int i = 0; i < items.length; i++) {
+            result[i] = MeterValue.of(items[i]);
         }
 
         return result;

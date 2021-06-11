@@ -1,5 +1,7 @@
 package de.serdioa.spring.metrics;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -13,7 +15,7 @@ import io.micrometer.core.instrument.config.MeterFilterReply;
 import io.micrometer.core.instrument.distribution.DistributionStatisticConfig;
 
 
-/**
+/*
  * A Micrometer {@link MeterFilter} to apply configured properties to metrics.
  */
 public class MetricsPropertiesFilter implements MeterFilter {
@@ -90,6 +92,22 @@ public class MetricsPropertiesFilter implements MeterFilter {
             Long value = maximumExpectedValue.get().getValue(id.getType());
             if (value != null) {
                 configBuilder.maximumExpectedValue(value.doubleValue());
+            }
+        }
+
+        Optional<MeterValue[]> slaValue =
+                this.properties.getSla().getHierarchical(meterName);
+        if (slaValue.isPresent()) {
+            MeterValue[] rawSlaValue = slaValue.get();
+
+            // Transform raw SLA values to meter-specific values. In particular, this step transforms durations
+            // to numeric representation required by Micrometer (which internally uses nanoseconds).
+            double[] convertedSlaValue = Arrays.stream(rawSlaValue).map(val -> val.getValue(id.getType()))
+                    .filter(Objects::nonNull)
+                    .mapToDouble(Long::doubleValue).toArray();
+
+            if (convertedSlaValue.length > 0) {
+                configBuilder.serviceLevelObjectives(convertedSlaValue);
             }
         }
 

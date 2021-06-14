@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>de.serdioa</groupId>
-    <artifactId>spring-micrometer-configure</artifactId>
+    <artifactId>spring-common-micrometer-configure</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -22,39 +22,20 @@
     <dependencies>
         <dependency>
             <groupId>de.serdioa</groupId>
-            <artifactId>spring-common-micrometer-configure</artifactId>
+            <artifactId>micrometer-registry-logback</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-core</artifactId>
+            <groupId>de.serdioa</groupId>
+            <artifactId>micrometer-registry-pull</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-core</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-context</artifactId>
-            <version>${spring.version}</version>
-        </dependency>
-
 
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-
     </dependencies>
 </project>

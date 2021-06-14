@@ -20,6 +20,7 @@
         <module>micrometer-registry-logback-jmh</module>
         <module>micrometer-registry-pull</module>
         <module>spring-boot-micrometer-autoconfigure</module>
+        <module>spring-common-micrometer-configure</module>
         <module>spring-micrometer-configure</module>
         <module>test-spring</module>
         <module>test-spring-boot</module>

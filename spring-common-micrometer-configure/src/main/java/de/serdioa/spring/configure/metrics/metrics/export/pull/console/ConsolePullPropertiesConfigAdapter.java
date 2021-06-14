@@ -1,4 +1,4 @@
-package de.serdioa.boot.actuate.autoconfigure.metrics.export.pull.console;
+package de.serdioa.spring.configure.metrics.metrics.export.pull.console;
 
 import java.time.Duration;
 

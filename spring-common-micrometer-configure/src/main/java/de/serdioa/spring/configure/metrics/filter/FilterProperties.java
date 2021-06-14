@@ -1,4 +1,4 @@
-package de.serdioa.boot.actuate.autoconfigure.metrics.filter;
+package de.serdioa.spring.configure.metrics.filter;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

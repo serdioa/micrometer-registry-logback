@@ -32,6 +32,20 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!--
+            This library uses isolated classes from spring-boot-actuator-autoconfigure to provide identical
+            configuration in plain-vanilla Spring and in Spring Boot. An application using this library must
+            either include spring-boot-actuator-autoconfigure JAR (spring-boot application), or extract relevant
+            classes from the spring-boot JAR and provide them directly (plain-vanilla Spring application).
+
+            The library "spring-micrometer-configure" includes relevant classes.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+            <optional>true</optional>
+        </dependency>
+
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>

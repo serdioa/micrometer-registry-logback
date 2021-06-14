@@ -1,4 +1,4 @@
-package de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.direct;
+package de.serdioa.spring.configure.metrics.export.logging.direct;
 
 import de.serdioa.micrometer.logging.direct.DirectLoggingRegistryConfig;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.properties.StepRegistryPropertiesConfigAdapter;

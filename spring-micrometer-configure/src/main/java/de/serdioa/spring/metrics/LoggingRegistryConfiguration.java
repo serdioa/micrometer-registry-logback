@@ -4,6 +4,8 @@ import java.time.Duration;
 
 import de.serdioa.micrometer.logging.agg.LoggingMeterRegistry;
 import de.serdioa.micrometer.logging.agg.LoggingRegistryConfig;
+import de.serdioa.spring.configure.metrics.export.logging.agg.LoggingProperties;
+import de.serdioa.spring.configure.metrics.export.logging.agg.LoggingPropertiesConfigAdapter;
 import de.serdioa.spring.properties.StructuredPropertyService;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
@@ -15,8 +17,8 @@ import org.springframework.context.annotation.Configuration;
 public class LoggingRegistryConfiguration {
 
     @Bean
-    public LoggingRegistryProperties loggingRegistryProperties(StructuredPropertyService propertyService) {
-        LoggingRegistryProperties props = new LoggingRegistryProperties();
+    public LoggingProperties loggingRegistryProperties(StructuredPropertyService propertyService) {
+        LoggingProperties props = new LoggingProperties();
 
         props.setEnabled(true);
         props.setStep(Duration.ofSeconds(10));
@@ -26,8 +28,8 @@ public class LoggingRegistryConfiguration {
 
 
     @Bean
-    public LoggingRegistryConfig loggingRegistryConfig(LoggingRegistryProperties props) {
-        return new LoggingRegistryPropertiesConfigAdapter(props);
+    public LoggingRegistryConfig loggingRegistryConfig(LoggingProperties props) {
+        return new LoggingPropertiesConfigAdapter(props);
     }
 
 

@@ -1,7 +1,6 @@
-package de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.direct;
+package de.serdioa.spring.configure.metrics.export.logging.direct;
 
-
-import de.serdioa.boot.actuate.autoconfigure.metrics.filter.FilterProperties;
+import de.serdioa.spring.configure.metrics.filter.FilterProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.actuate.autoconfigure.metrics.export.properties.StepRegistryProperties;

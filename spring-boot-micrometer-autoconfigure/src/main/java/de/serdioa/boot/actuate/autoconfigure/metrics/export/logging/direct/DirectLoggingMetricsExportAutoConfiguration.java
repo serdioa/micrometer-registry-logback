@@ -1,6 +1,8 @@
 package de.serdioa.boot.actuate.autoconfigure.metrics.export.logging.direct;
 
-import de.serdioa.boot.actuate.autoconfigure.metrics.filter.FilterMeterRegistryCustomizer;
+import de.serdioa.spring.configure.metrics.export.logging.direct.DirectLoggingProperties;
+import de.serdioa.spring.configure.metrics.export.logging.direct.DirectLoggingPropertiesConfigAdapter;
+import de.serdioa.spring.configure.metrics.filter.FilterMeterRegistryCustomizer;
 import de.serdioa.micrometer.logging.direct.DirectLoggingMeterRegistry;
 import de.serdioa.micrometer.logging.direct.DirectLoggingRegistryConfig;
 

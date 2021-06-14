@@ -1,6 +1,8 @@
 package de.serdioa.boot.actuate.autoconfigure.metrics.export.pull.console;
 
-import de.serdioa.boot.actuate.autoconfigure.metrics.filter.FilterMeterRegistryCustomizer;
+import de.serdioa.spring.configure.metrics.metrics.export.pull.console.ConsolePullProperties;
+import de.serdioa.spring.configure.metrics.metrics.export.pull.console.ConsolePullPropertiesConfigAdapter;
+import de.serdioa.spring.configure.metrics.filter.FilterMeterRegistryCustomizer;
 import de.serdioa.micrometer.pull.console.ConsolePullConfig;
 import de.serdioa.micrometer.pull.console.ConsolePullMeterRegistry;
 

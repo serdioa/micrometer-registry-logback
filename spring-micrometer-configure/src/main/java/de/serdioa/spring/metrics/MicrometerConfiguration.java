@@ -6,9 +6,11 @@ import java.util.Map;
 import de.serdioa.spring.properties.StructuredPropertyService;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.composite.CompositeMeterRegistry;
 import io.micrometer.core.instrument.config.MeterFilter;
 import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -92,7 +94,9 @@ public class MicrometerConfiguration {
 
 
     @Bean
-    public MeterRegistryPostProcessor micrometerMetricsRegistryPostProcessor(ObjectProvider<MeterFilter> meterFilters) {
-        return new MeterRegistryPostProcessor(meterFilters);
+    public MeterRegistryPostProcessor micrometerMetricsRegistryPostProcessor(
+            ObjectProvider<MeterRegistryCustomizer> customizers, ObjectProvider<MeterFilter> filters,
+            ObjectProvider<MeterBinder> binders) {
+        return new MeterRegistryPostProcessor(customizers, filters, binders);
     }
 }

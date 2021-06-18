@@ -21,6 +21,21 @@ public class StructuredPropertyService implements ApplicationContextAware {
     }
 
 
+    public String getProperty(String name) {
+        return this.ctx.getEnvironment().getProperty(name);
+    }
+
+
+    public <T> T getProperty(String name, Class<T> type) {
+        return this.ctx.getEnvironment().getProperty(name, type);
+    }
+
+
+    public <T> T getProperty(String name, Class<T> type, T fallback) {
+        return this.ctx.getEnvironment().getProperty(name, type, fallback);
+    }
+
+
     public Map<String, String> getProperties(String prefix) {
         return PropertiesUtil.sub(this.ctx, prefix);
     }

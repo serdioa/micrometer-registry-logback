@@ -9,7 +9,7 @@
     </parent>
 
     <groupId>de.serdioa</groupId>
-    <artifactId>micrometer-registry-pull</artifactId>
+    <artifactId>spring-common-micrometer-configure</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
@@ -22,13 +22,28 @@
     <dependencies>
         <dependency>
             <groupId>de.serdioa</groupId>
-            <artifactId>test-micrometer</artifactId>
+            <artifactId>micrometer-registry-logback</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-core</artifactId>
+            <groupId>de.serdioa</groupId>
+            <artifactId>micrometer-registry-pull</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <!--
+            This library uses isolated classes from spring-boot-actuator-autoconfigure to provide identical
+            configuration in plain-vanilla Spring and in Spring Boot. An application using this library must
+            either include spring-boot-actuator-autoconfigure JAR (spring-boot application), or extract relevant
+            classes from the spring-boot JAR and provide them directly (plain-vanilla Spring application).
+
+            The library "spring-micrometer-configure" includes relevant classes.
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-actuator-autoconfigure</artifactId>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -37,23 +52,4 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <encoding>UTF-8</encoding>
-                    <compilerArgs>
-                        <arg>-g</arg>
-                        <arg>-Xlint</arg>
-                    </compilerArgs>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>

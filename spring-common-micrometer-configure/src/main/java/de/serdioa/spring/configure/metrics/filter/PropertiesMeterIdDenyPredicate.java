@@ -1,9 +1,9 @@
 package de.serdioa.spring.configure.metrics.filter;
 
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Predicate;
 
+import de.serdioa.spring.configure.properties.HierarchicalProperties;
 import io.micrometer.core.instrument.Meter;
 
 
@@ -15,31 +15,20 @@ import io.micrometer.core.instrument.Meter;
  */
 class PropertiesMeterIdDenyPredicate implements Predicate<Meter.Id> {
 
-    private final Map<String, Boolean> enabled;
+    private final HierarchicalProperties<Boolean> enabled;
 
 
     public PropertiesMeterIdDenyPredicate(Map<String, Boolean> enabled) {
-        this.enabled = Objects.requireNonNull(enabled);
+        this.enabled = new HierarchicalProperties<>(enabled);
     }
 
 
     @Override
     public boolean test(Meter.Id meterId) {
         String name = meterId.getName();
-
-        while (name != null && !name.isEmpty()) {
-            Boolean enabled = this.enabled.get(name);
-            if (enabled != null) {
-                // Invert the configured value: if "enabled=true" is configured, return "false", that is "deny".
-                return !enabled;
-            }
-
-            // Try the prefix.
-            int lastSeparatorIndex = name.lastIndexOf('.');
-            name = (lastSeparatorIndex > 0 ? name.substring(0, lastSeparatorIndex) : "");
-        }
-
-        // Not found the name or any prefix of it in the configuration.
-        return false;
+        
+        // Invert the boolean value because this is a "deny" predicate which shall return "true" to disable a meter.
+        // By default return "false", i.e. enable a meter.
+        return !this.enabled.getHierarchical(name, Boolean.FALSE);
     }
 }

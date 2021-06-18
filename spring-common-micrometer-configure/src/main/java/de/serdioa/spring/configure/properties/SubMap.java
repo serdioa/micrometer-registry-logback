@@ -1,4 +1,4 @@
-package de.serdioa.spring.properties;
+package de.serdioa.spring.configure.properties;
 
 import java.util.AbstractMap;
 import java.util.Collections;

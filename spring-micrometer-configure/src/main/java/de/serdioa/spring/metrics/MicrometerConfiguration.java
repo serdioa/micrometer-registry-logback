@@ -3,7 +3,7 @@ package de.serdioa.spring.metrics;
 import java.util.List;
 import java.util.Map;
 
-import de.serdioa.spring.properties.StructuredPropertyService;
+import de.serdioa.spring.configure.properties.StructuredPropertyService;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;

@@ -2,7 +2,7 @@ package de.serdioa.spring.metrics;
 
 import java.util.Map;
 
-import de.serdioa.spring.properties.HierarchicalProperties;
+import de.serdioa.spring.configure.properties.HierarchicalProperties;
 import lombok.Value;
 
 

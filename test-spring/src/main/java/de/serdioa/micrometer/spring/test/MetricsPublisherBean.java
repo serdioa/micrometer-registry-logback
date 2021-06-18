@@ -11,7 +11,7 @@ import de.serdioa.micrometer.test.GaugePublisher;
 import de.serdioa.micrometer.test.LongTaskTimerPublisher;
 import de.serdioa.micrometer.test.TimeGaugePublisher;
 import de.serdioa.micrometer.test.TimerPublisher;
-import de.serdioa.spring.properties.StructuredPropertyService;
+import de.serdioa.spring.configure.properties.StructuredPropertyService;
 import io.micrometer.core.instrument.MeterRegistry;
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;

@@ -1,4 +1,6 @@
-package de.serdioa.spring.properties;
+package de.serdioa.spring.configure.properties;
+
+import de.serdioa.spring.configure.properties.HierarchicalProperties;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;

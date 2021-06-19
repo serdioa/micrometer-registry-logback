@@ -56,6 +56,6 @@ public class LoggingMetricsExportAutoConfiguration {
 
     @Bean
     public MeterRegistryCustomizer<LoggingMeterRegistry> loggingFilterMeterRegistryCustomizer() {
-        return new FilterMeterRegistryCustomizer<>(this.properties.getFilter());
+        return new FilterMeterRegistryCustomizer<>(LoggingMeterRegistry.class, this.properties.getFilter());
     }
 }

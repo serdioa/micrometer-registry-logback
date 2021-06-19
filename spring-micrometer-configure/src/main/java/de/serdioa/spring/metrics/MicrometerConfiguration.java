@@ -95,7 +95,7 @@ public class MicrometerConfiguration {
 
     @Bean
     public MeterRegistryPostProcessor micrometerMetricsRegistryPostProcessor(
-            ObjectProvider<MeterRegistryCustomizer> customizers, ObjectProvider<MeterFilter> filters,
+            ObjectProvider<MeterRegistryCustomizer<?>> customizers, ObjectProvider<MeterFilter> filters,
             ObjectProvider<MeterBinder> binders) {
         return new MeterRegistryPostProcessor(customizers, filters, binders);
     }

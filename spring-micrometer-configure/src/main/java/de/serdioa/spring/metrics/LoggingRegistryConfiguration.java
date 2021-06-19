@@ -65,6 +65,6 @@ public class LoggingRegistryConfiguration {
 
     @Bean
     public MeterRegistryCustomizer<LoggingMeterRegistry> loggingFilterMeterRegistryCustomizer(LoggingProperties props) {
-        return new FilterMeterRegistryCustomizer<>(props.getFilter());
+        return new FilterMeterRegistryCustomizer<>(LoggingMeterRegistry.class, props.getFilter());
     }
 }

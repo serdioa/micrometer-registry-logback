@@ -14,5 +14,6 @@
 
     <bean id="loggingRegistryConfiguration" class="de.serdioa.spring.metrics.LoggingRegistryConfiguration" />
     <bean id="directLoggingRegistryConfiguration" class="de.serdioa.spring.metrics.DirectLoggingRegistryConfiguration" />
+    <bean id="consolePullRegistryConfiguration" class="de.serdioa.spring.metrics.ConsolePullRegistryConfiguration" />
     
 </beans>

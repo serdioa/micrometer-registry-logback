@@ -1,6 +1,7 @@
 package de.serdioa.spring.metrics;
 
 import java.time.Duration;
+import java.util.Map;
 
 import de.serdioa.micrometer.pull.console.ConsolePullConfig;
 import de.serdioa.micrometer.pull.console.ConsolePullMeterRegistry;
@@ -24,6 +25,7 @@ public class ConsolePullRegistryConfiguration {
     private static final String PROP_ENABLED = PROP_PREFIX + ".enabled";
     private static final String PROP_POLLING_FREQUENCY = PROP_PREFIX + ".pollingFrequency";
     private static final String PROP_FILTER_ENABLED = PROP_PREFIX + ".filter.enabled";
+    private static final String PROP_RENAME = PROP_PREFIX + ".filter.rename";
 
 
     @Bean
@@ -42,6 +44,9 @@ public class ConsolePullRegistryConfiguration {
         HierarchicalProperties<Boolean> filterEnabled = propertyService.getProperties(
                 PROP_FILTER_ENABLED, Boolean::valueOf);
         props.getFilter().getEnabled().putAll(filterEnabled);
+
+        Map<String, String> rename = propertyService.getProperties(PROP_RENAME);
+        props.getFilter().getRename().putAll(rename);
 
         return props;
     }

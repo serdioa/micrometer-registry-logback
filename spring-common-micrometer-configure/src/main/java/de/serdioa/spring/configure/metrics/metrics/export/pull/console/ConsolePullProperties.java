@@ -1,6 +1,8 @@
 package de.serdioa.spring.configure.metrics.metrics.export.pull.console;
 
 import java.time.Duration;
+import java.util.HashMap;
+import java.util.Map;
 
 import de.serdioa.spring.configure.metrics.filter.FilterProperties;
 import lombok.Getter;

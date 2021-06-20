@@ -23,6 +23,7 @@ public class FilterMeterRegistryCustomizer<T extends MeterRegistry> extends Type
     @Override
     public void customizeSafe(T registry) {
         this.addEnabledFilter(registry);
+        this.addRenameFilter(registry);
     }
 
 
@@ -39,5 +40,12 @@ public class FilterMeterRegistryCustomizer<T extends MeterRegistry> extends Type
         Predicate<Meter.Id> denyPredicate = new PropertiesMeterIdDenyPredicate(enabled);
         MeterFilter enabledFilter = MeterFilter.deny(denyPredicate);
         registry.config().meterFilter(enabledFilter);
+    }
+    
+    // Add to the specified registry a filter which renames meters using provided rename patterns.
+    private void addRenameFilter(T registry) {
+        Map<String, String> rename = this.filterProperties.getRename();
+        MeterFilter renameFilter = new RenameFilter(rename);
+        registry.config().meterFilter(renameFilter);
     }
 }

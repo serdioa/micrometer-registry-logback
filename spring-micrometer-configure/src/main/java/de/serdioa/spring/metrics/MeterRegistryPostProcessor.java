@@ -1,5 +1,8 @@
 package de.serdioa.spring.metrics;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.binder.MeterBinder;
 import io.micrometer.core.instrument.config.MeterFilter;
@@ -7,6 +10,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
+import org.springframework.boot.util.LambdaSafe;
 
 
 /**
@@ -14,14 +18,14 @@ import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCusto
  */
 public class MeterRegistryPostProcessor implements BeanPostProcessor {
 
-    private final ObjectProvider<MeterRegistryCustomizer> customizers;
+    private final ObjectProvider<MeterRegistryCustomizer<?>> customizers;
 
     private final ObjectProvider<MeterFilter> filters;
 
     private final ObjectProvider<MeterBinder> binders;
 
 
-    public MeterRegistryPostProcessor(ObjectProvider<MeterRegistryCustomizer> customizers,
+    public MeterRegistryPostProcessor(ObjectProvider<MeterRegistryCustomizer<?>> customizers,
             ObjectProvider<MeterFilter> filters, ObjectProvider<MeterBinder> binders) {
         this.customizers = customizers;
         this.filters = filters;
@@ -48,8 +52,13 @@ public class MeterRegistryPostProcessor implements BeanPostProcessor {
     }
 
 
-    private void customize(MeterRegistry meterRegistry) {
-        this.customizers.orderedStream().forEach(customizer -> customizer.customize(meterRegistry));
+    @SuppressWarnings("unchecked")
+    private void customize(MeterRegistry registry) {
+        List<MeterRegistryCustomizer<?>> customizersList =
+                this.customizers.orderedStream().collect(Collectors.toList());
+
+        LambdaSafe.callbacks(MeterRegistryCustomizer.class, customizersList, registry)
+                .withLogger(MeterRegistryPostProcessor.class).invoke((customizer) -> customizer.customize(registry));
     }
 
 

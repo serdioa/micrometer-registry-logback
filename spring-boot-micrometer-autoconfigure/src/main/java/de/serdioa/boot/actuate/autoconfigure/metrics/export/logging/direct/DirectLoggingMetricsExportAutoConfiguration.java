@@ -56,6 +56,6 @@ public class DirectLoggingMetricsExportAutoConfiguration {
 
     @Bean
     public MeterRegistryCustomizer<DirectLoggingMeterRegistry> directLoggingFilterMeterRegistryCustomizer() {
-        return new FilterMeterRegistryCustomizer<>(this.properties.getFilter());
+        return new FilterMeterRegistryCustomizer<>(DirectLoggingMeterRegistry.class, this.properties.getFilter());
     }
 }

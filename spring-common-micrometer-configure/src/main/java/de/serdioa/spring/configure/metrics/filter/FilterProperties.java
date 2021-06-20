@@ -7,6 +7,10 @@ import lombok.Getter;
 
 
 public class FilterProperties {
+
     @Getter
     private final Map<String, Boolean> enabled = new LinkedHashMap<>();
+
+    @Getter
+    private final Map<String, String> rename = new LinkedHashMap<>();
 }

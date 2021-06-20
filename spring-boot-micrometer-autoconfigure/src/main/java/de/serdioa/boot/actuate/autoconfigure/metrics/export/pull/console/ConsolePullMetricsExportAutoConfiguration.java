@@ -56,6 +56,6 @@ public class ConsolePullMetricsExportAutoConfiguration {
 
     @Bean
     public MeterRegistryCustomizer<ConsolePullMeterRegistry> consolePullFilterMeterRegistryCustomizer() {
-        return new FilterMeterRegistryCustomizer<>(this.properties.getFilter());
+        return new FilterMeterRegistryCustomizer<>(ConsolePullMeterRegistry.class, this.properties.getFilter());
     }
 }

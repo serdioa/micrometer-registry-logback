@@ -7,8 +7,8 @@ import de.serdioa.micrometer.logging.agg.LoggingRegistryConfig;
 import de.serdioa.spring.configure.metrics.export.logging.agg.LoggingProperties;
 import de.serdioa.spring.configure.metrics.export.logging.agg.LoggingPropertiesConfigAdapter;
 import de.serdioa.spring.configure.metrics.filter.FilterMeterRegistryCustomizer;
-import de.serdioa.spring.properties.HierarchicalProperties;
-import de.serdioa.spring.properties.StructuredPropertyService;
+import de.serdioa.spring.configure.properties.HierarchicalProperties;
+import de.serdioa.spring.configure.properties.StructuredPropertyService;
 import io.micrometer.core.instrument.Clock;
 import io.micrometer.core.instrument.MeterRegistry;
 import org.springframework.boot.actuate.autoconfigure.metrics.MeterRegistryCustomizer;
@@ -65,6 +65,6 @@ public class LoggingRegistryConfiguration {
 
     @Bean
     public MeterRegistryCustomizer<LoggingMeterRegistry> loggingFilterMeterRegistryCustomizer(LoggingProperties props) {
-        return new FilterMeterRegistryCustomizer<>(props.getFilter());
+        return new FilterMeterRegistryCustomizer<>(LoggingMeterRegistry.class, props.getFilter());
     }
 }
